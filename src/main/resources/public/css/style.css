@@ -5,3 +5,7 @@ body {
 #word {
     width: 30%;
 }
+
+.container h1{
+    font-size: 3.0em;
+}

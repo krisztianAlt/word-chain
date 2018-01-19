@@ -12,8 +12,9 @@
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.0.0-beta.3/sketchy/bootstrap.min.css" />
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -41,9 +42,8 @@
                         <div class="form-group">
                             <label for="word" class="cols-sm-2 control-label">Type here a word, and it will be checked:</label>
                             <div class="cols-sm-12">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-book" aria-hidden="true"></i></span>
-                                    <input type="text" class="form-control" id="word" name="word" th:value="${word}" />
+                                <div class="input-group" id="word">
+                                    <input type="text" class="form-control" name="word" th:value="${word}" />
                                 </div>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="form-group ">
-                    <input class="btn btn-primary" type="submit" value="Check"/>
+                    <input class="btn btn-info" type="submit" value="Check"/>
                 </div>
 
             </form>
@@ -67,14 +67,16 @@
             <br/>
             <table class="table table-hover">
                 <thead>
-                    <tr>
+                    <tr class="table-secondary">
+                        <th></th>
                         <th class="center">Meanings from the Oxford Dictionary</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr th:each="meaning, iterStat : ${meanings}">
-                        <td th:text="${iterStat.count} + '. ' + ${meaning}">meaning</td>
+                        <td th:text="${iterStat.count} + '.'">count</td>
+                        <td th:text="${meaning}">meaning</td>
                     </tr>
                 </tbody>
 
