@@ -1,5 +1,6 @@
 package com.wordchain.service;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.stereotype.Service;
 import javax.net.ssl.HttpsURLConnection;
@@ -19,6 +20,8 @@ public class DictionaryApiCalling {
     final String app_id = "e527f646";
     final String app_key = "22fe22705e0ebbe814343a76b88c86d3";
 
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(DictionaryApiCalling.class);
+
     public List<String> getMeanings(String word) {
 
         try {
@@ -32,7 +35,7 @@ public class DictionaryApiCalling {
             BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             StringBuilder stringBuilder = new StringBuilder();
 
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line + "\n");
             }
@@ -42,14 +45,14 @@ public class DictionaryApiCalling {
             return getMeaningsFromJson(fullJsonString);
 
         } catch (FileNotFoundException e){
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             return new ArrayList<>();
         } catch (NullPointerException e){
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             return new ArrayList<>();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return new ArrayList<>();
         }
 
