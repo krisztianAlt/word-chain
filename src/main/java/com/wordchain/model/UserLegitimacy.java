@@ -1,4 +1,6 @@
 package com.wordchain.model;
 
-public class UserLegitimacy {
+public enum UserLegitimacy {
+    ADMIN,
+    USER;
 }
