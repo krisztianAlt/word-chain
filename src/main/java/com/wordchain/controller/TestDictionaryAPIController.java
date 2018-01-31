@@ -17,7 +17,7 @@ public class TestDictionaryAPIController {
     @Autowired
     DictionaryApiCalling dictionaryApiCalling;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/word-check", method = RequestMethod.GET)
     public String testPage(Model model) {
         model.addAttribute("word", "");
         model.addAttribute("meanings", new ArrayList<>());
