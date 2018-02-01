@@ -8,8 +8,12 @@ import com.wordchain.service.PlayerDataValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PlayerDataHandler {
@@ -60,6 +64,51 @@ public class PlayerDataHandler {
         }
 
         return savingSucceeded;
+    }
+
+    public Model collectLoginData(@RequestParam Map<String,String> allRequestParams,
+                                  Model model) {
+        List<String> errorMessages = new ArrayList();
+        Map<String, String> playerDatas = new HashMap<>();
+        Player player = null;
+        if (allRequestParams.size() > 0){
+            playerDatas.put("email", allRequestParams.get("email"));
+            playerDatas.put("password", allRequestParams.get("password"));
+
+            Map<String, Object> errorMessagesAndPlayer = playerDataValidator.validateLoginDatas(playerDatas);
+            errorMessages = (List<String>) errorMessagesAndPlayer.get("errors");
+            player = (Player) errorMessagesAndPlayer.get("player");
+
+        }
+
+        model.addAttribute("player", playerDatas);
+        model.addAttribute("errors", errorMessages);
+        model.addAttribute("validplayer", player);
+
+        return model;
+    }
+
+    public boolean checkUserIsAdmin(long playerId) {
+
+        Player player = queryHandler.getPlayerById(playerId);
+
+        if (player.getLegitimacy()== UserLegitimacy.ADMIN.ADMIN) {
+            return true;
+
+        }
+        return false;
+    }
+
+    public boolean checkUserIsLoggedUserOrAdmin(long playerId) {
+
+        Player player = queryHandler.getPlayerById(playerId);
+
+        if (player.getLegitimacy() == UserLegitimacy.ADMIN ||
+                player.getLegitimacy()== UserLegitimacy.USER ) {
+            return true;
+
+        }
+        return false;
     }
 
 }

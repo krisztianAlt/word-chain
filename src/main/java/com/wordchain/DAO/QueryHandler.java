@@ -19,4 +19,8 @@ public class QueryHandler {
         return playerRepository.getPlayerByEmail(email);
     }
 
+    public Player getPlayerById(Long playerId){
+        return playerRepository.getPlayerById(playerId);
+    }
+
 }

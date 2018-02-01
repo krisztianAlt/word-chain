@@ -41,7 +41,7 @@ public class PlayerDataValidator {
         }
 
         if (passwordLenghtIsBad(player.getPassword())){
-            errorMessages.add("Password must be a minimum of 8 characters and a maximum 128 characters.");
+            errorMessages.add("Password must be a minimum of 5 characters and a maximum 55 characters.");
         }
 
         if (!player.getPassword().equals(confirm)){
@@ -92,7 +92,7 @@ public class PlayerDataValidator {
     }
 
     private boolean passwordLenghtIsBad(String password) {
-        if (password.length() < 8 || password.length() > 128){
+        if (password.length() < 5 || password.length() > 55){
             return true;
         }
         return false;
@@ -116,7 +116,7 @@ public class PlayerDataValidator {
 
         Map<String, Object> result = new HashMap<>();
         result.put("errors", errorMessages);
-        result.put("customer", playerFromDB);
+        result.put("player", playerFromDB);
         return result;
     }
 

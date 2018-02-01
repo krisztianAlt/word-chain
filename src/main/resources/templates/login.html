@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{layout}"
+      lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login | Word Chain</title>
 </head>
 <body>
+
+<div layout:fragment="content" class="container">
+
+    <header class="container text-center">
+        <h2>Login</h2>
+    </header>
+
+    <div class="main-registration main-center-login">
+        <div id="error-messages" class="text-danger" th:if="${#lists.size(errors)>0}">
+            <ul th:each="error : ${errors}">
+                <li th:text="${error}"></li>
+            </ul>
+        </div>
+
+        <form action="/login" class="form-horizontal" method="post">
+
+            <div class="form-group">
+                <label for="email" class="cols-sm-2 control-label">Email</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+                        <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your Email"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="cols-sm-2 control-label">Password</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                        <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-success registration-button">Join the chain...</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
 
 </body>
 </html>

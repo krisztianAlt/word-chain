@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title>Player Registration | Word Chain</title>
+    <title>Registration | Word Chain</title>
 </head>
 <body>
 
@@ -14,13 +14,13 @@
             <h2>Registration</h2>
         </header>
 
-        <div id="error-messages" class="text-danger" th:if="${#lists.size(errors)>0}">
-            <ul th:each="error : ${errors}">
-                <li th:text="${error}"></li>
-            </ul>
-        </div>
-
         <div class="main-registration main-center-registration">
+            <div id="error-messages" class="text-danger" th:if="${#lists.size(errors)>0}">
+                <ul th:each="error : ${errors}">
+                    <li th:text="${error}"></li>
+                </ul>
+            </div>
+
             <form action="/registration" class="form-horizontal" th:object="${player}" method="post">
                 <div class="row">
                     <div class="col-md-6">

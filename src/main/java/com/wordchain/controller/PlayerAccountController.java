@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PlayerAccountController {
@@ -53,15 +55,29 @@ public class PlayerAccountController {
         return "registration-succeeded";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model){
+    @RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
+    public String renderLogin(@RequestParam Map<String,String> allRequestParams,
+                              Model model,
+                              HttpServletRequest httpServletRequest) {
+        model = playerDataHandler.collectLoginData(allRequestParams, model);
+
+        List<String> errorMessages = (List) model.asMap().get("errors");
+        Player player = (Player) model.asMap().get("validplayer");
+
+        if (errorMessages.size() == 0 && player != null){
+            httpServletRequest.getSession().setAttribute("player_id", player.getId());
+            httpServletRequest.getSession().setAttribute("player_name", player.getUserName());
+            return "redirect:/";
+        }
+
         return "login";
+
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestParam("word") String word,
-                            Model model){
-        return "login";
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String renderLogout(HttpServletRequest httpServletRequest) {
+        httpServletRequest.getSession().invalidate();
+        return "redirect:/";
     }
 
 }
