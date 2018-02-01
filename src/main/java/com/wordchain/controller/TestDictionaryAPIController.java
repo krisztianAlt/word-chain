@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,14 @@ public class TestDictionaryAPIController {
     DictionaryApiCalling dictionaryApiCalling;
 
     @RequestMapping(value = "/word-check", method = RequestMethod.GET)
-    public String testPage(Model model) {
+    public String testPage(Model model,
+                           HttpServletRequest httpServletRequest) {
+
+        Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
+        String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");
+
+        model.addAttribute("loggedIn", playerId != null);
+        model.addAttribute("playername", playerName);
         model.addAttribute("word", "");
         model.addAttribute("meanings", new ArrayList<>());
         model.addAttribute("checking", false);
@@ -27,8 +35,16 @@ public class TestDictionaryAPIController {
 
     @RequestMapping(value = "/word-check", method = RequestMethod.POST)
     public String checkWord(@RequestParam("word") String word,
-                            Model model){
+                            Model model,
+                            HttpServletRequest httpServletRequest){
+
+        Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
+        String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");
+
         List<String> meanings = dictionaryApiCalling.getMeanings(word);
+
+        model.addAttribute("loggedIn", playerId != null);
+        model.addAttribute("playername", playerName);
         model.addAttribute("word", word);
         model.addAttribute("meanings", meanings);
         model.addAttribute("checking", true);
