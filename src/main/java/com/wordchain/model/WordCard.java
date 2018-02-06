@@ -5,8 +5,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "WORD")
-public class Word {
+@Table(name = "WORDCARD")
+public class WordCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +16,13 @@ public class Word {
 
     private String hungarianTranslation;
 
-    @ManyToMany(mappedBy = "myWords")
+    @ManyToMany(mappedBy = "myWordCards")
     private List<Player> players;
 
-    public Word(String word) {
+    public WordCard(String word) {
+
         this.word = word;
+
     }
 
     public long getId() {

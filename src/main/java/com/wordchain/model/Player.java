@@ -1,8 +1,10 @@
 package com.wordchain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wordchain.WordChain;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @NamedQueries({
         @NamedQuery(
@@ -22,6 +24,9 @@ import java.util.List;
 @Table(name = "PLAYER")
 public class Player {
 
+    @Transient
+    public static List<Player> onlinePlayers = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -29,21 +34,30 @@ public class Player {
     private String userName;
 
     @Column(unique = true, nullable = false)
+    @JsonIgnore
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
+    // @JsonIgnore
     private UserLegitimacy legitimacy;
 
     @ManyToMany
-    private List<Word> myWords;
+    // @JsonIgnore
+    private List<WordCard> myWordCards;
 
     @ManyToMany
+    // @JsonIgnore
     private List<Game> games;
 
     @OneToMany(mappedBy = "creator")
+    // @JsonIgnore
     private List<Game> createdGames;
+
+    @OneToMany(mappedBy = "player")
+    private List<WordChainItem> wordsInChains;
 
     public Player() {
     }
@@ -53,7 +67,8 @@ public class Player {
         this.email = email;
         this.password = password;
         this.legitimacy = legitimacy;
-        this.myWords = new ArrayList<>();
+        // this.myWordCards = new ArrayList<>();
+        this.createdGames = new ArrayList<>();
     }
 
     public long getId() {
@@ -96,13 +111,13 @@ public class Player {
         this.legitimacy = legitimacy;
     }
 
-    public List<Word> getMyWords() {
-        return myWords;
+    /*public List<WordCard> getMyWordCards() {
+        return myWordCards;
     }
 
-    public void setMyWords(List<Word> myWords) {
-        this.myWords = myWords;
-    }
+    public void setMyWordCards(List<WordCard> myWordCards) {
+        this.myWordCards = myWordCards;
+    }*/
 
     public List<Game> getGames() {
         return games;
