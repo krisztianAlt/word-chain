@@ -60,3 +60,7 @@ input::-webkit-input-placeholder {
     padding: 40px 40px;
     /*opacity: 0.9;*/
 }
+
+.navbar-collapse.collapse.in {
+    display: block!important;
+}
