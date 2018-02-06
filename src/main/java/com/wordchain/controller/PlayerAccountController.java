@@ -2,6 +2,8 @@ package com.wordchain.controller;
 
 import com.wordchain.controller.collectData.PlayerDataHandler;
 import com.wordchain.model.Player;
+import com.wordchain.service.DictionaryApiCalling;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +24,8 @@ public class PlayerAccountController {
 
     @Autowired
     PlayerDataHandler playerDataHandler;
+
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(PlayerAccountController.class);
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
@@ -31,7 +37,8 @@ public class PlayerAccountController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registration(@ModelAttribute Player player,
                                @RequestParam("confirm") String confirm,
-                               Model model) {
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
 
         model = playerDataHandler.collectPlayerRegistrationData(player, confirm, model);
 
@@ -40,7 +47,8 @@ public class PlayerAccountController {
         if (errorMessages.size() == 0 &&
                 (boolean) model.asMap().get("savingtried")){
             if ((boolean) model.asMap().get("savingsucceeded")){
-                return "redirect:/registration-succeeded";
+                redirectAttributes.addFlashAttribute("newplayersaved", true);
+                return "redirect:/";
             } else {
                 errorMessages.add("Database problem. Please, try later.");
                 model.addAttribute("errors", errorMessages);
@@ -48,11 +56,6 @@ public class PlayerAccountController {
         }
 
         return "registration";
-    }
-
-    @RequestMapping(value = "/registration-succeeded", method = RequestMethod.GET)
-    public String registrationSucceeded() {
-        return "registration-succeeded";
     }
 
     @RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
@@ -67,6 +70,7 @@ public class PlayerAccountController {
         if (errorMessages.size() == 0 && player != null){
             httpServletRequest.getSession().setAttribute("player_id", player.getId());
             httpServletRequest.getSession().setAttribute("player_name", player.getUserName());
+            Player.onlinePlayers.add(player);
             return "redirect:/";
         }
 
@@ -76,7 +80,19 @@ public class PlayerAccountController {
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String renderLogout(HttpServletRequest httpServletRequest) {
+        long logoutPlayerId = (long) httpServletRequest.getSession().getAttribute("player_id");
+
+        Iterator<Player> onlinePlayers = Player.onlinePlayers.iterator();
+
+        while (onlinePlayers.hasNext()) {
+            Player player = onlinePlayers.next();
+
+            if (player.getId() == logoutPlayerId)
+                onlinePlayers.remove();
+        }
+
         httpServletRequest.getSession().invalidate();
+        logger.info("ONLINE PLAYERS: " + Player.onlinePlayers.toString());
         return "redirect:/";
     }
 
