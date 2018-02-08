@@ -80,8 +80,8 @@ public class PlayerAccountController {
     public String renderLogout(HttpServletRequest httpServletRequest) {
         long logoutPlayerId = (long) httpServletRequest.getSession().getAttribute("player_id");
 
-        playerDataHandler.deletePlayerFromOnlinePlayersList(logoutPlayerId);
         playerDataHandler.deletePlayerFromOnlineGames(logoutPlayerId);
+        playerDataHandler.deletePlayerFromOnlinePlayersList(logoutPlayerId);
 
         httpServletRequest.getSession().invalidate();
         logger.info("ONLINE PLAYERS: " + Player.onlinePlayers.toString());

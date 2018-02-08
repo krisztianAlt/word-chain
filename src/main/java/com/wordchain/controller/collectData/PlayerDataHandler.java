@@ -129,13 +129,22 @@ public class PlayerDataHandler {
 
             if (game.getCreator().getId() == logoutPlayerId &&
                     game.getStatus().equals(GameStatus.NEW)){
-                game.deleteGame();
+                // game.deleteGame();
+                onlineGames.remove();
             } else {
-                for (Player player : game.getPlayers()){
+                Iterator<Player> playersIter = game.getPlayers().iterator();
+
+                while (playersIter.hasNext()){
+                    Player player = playersIter.next();
+                    if (player.getId() == logoutPlayerId){
+                        playersIter.remove();
+                    }
+                }
+                /*for (Player player : game.getPlayers()){
                     if (player.getId() == logoutPlayerId){
                         game.removePlayerFromGame(player);
                     }
-                }
+                }*/
             }
         }
     }
