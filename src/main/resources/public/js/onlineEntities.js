@@ -97,8 +97,13 @@ app.onlineEntitiesHandler = {
             }
             members.appendChild(memberList);
 
+            var gameType = document.createElement('td');
+            var gameTypeText = document.createTextNode(everyGame[gameIndex].gameType);
+            gameType.appendChild(gameTypeText);
+
             newRow.appendChild(creatorName);
             newRow.appendChild(members);
+            newRow.appendChild(gameType);
             tableBody.appendChild(newRow);
         }
     },
@@ -131,10 +136,32 @@ app.onlineEntitiesHandler = {
             var gameTypeText = document.createTextNode(myGames[gameIndex].gameType);
             gameType.appendChild(gameTypeText);
 
+            var startButtonCell = document.createElement('td');
+            var startButton = document.createElement('button');
+            startButton.className = 'btn btn-success btn-sm';
+            startButton.classList.add('start-button');
+            startButton.textContent = 'Start';
+            startButtonCell.appendChild(startButton);
+
+            var deleteButtonCell = document.createElement('td');
+            var deleteButton = document.createElement('button');
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.classList.add('delete-button');
+            deleteButton.textContent = 'Delete';
+            var gameIdAttribute = document.createAttribute("data-gameid");
+            gameIdAttribute.value = myGames[gameIndex].gameId;
+            deleteButton.setAttributeNode(gameIdAttribute);
+            deleteButtonCell.appendChild(deleteButton);
+
             newRow.appendChild(members);
             newRow.appendChild(gameType);
+            newRow.appendChild(startButtonCell);
+            newRow.appendChild(deleteButtonCell);
             tableBody.appendChild(newRow);
+
         }
+
+        app.onlineEntitiesHandler.activateDeleteGameButtons();
 
     },
 
@@ -175,6 +202,7 @@ app.onlineEntitiesHandler = {
             var gameTypeText = document.createTextNode(othersGames[gameIndex].gameType);
             gameType.appendChild(gameTypeText);
 
+            var buttonCell = document.createElement('td');
             var button = document.createElement('button');
 
             if (playerJoined){
@@ -190,16 +218,19 @@ app.onlineEntitiesHandler = {
             var gameIdAttribute = document.createAttribute("data-gameid");
             gameIdAttribute.value = othersGames[gameIndex].gameId;
             button.setAttributeNode(gameIdAttribute);
+            buttonCell.appendChild(button);
 
             newRow.appendChild(creatorName);
             newRow.appendChild(members);
             newRow.appendChild(gameType);
-            newRow.appendChild(button);
+            newRow.appendChild(buttonCell);
             tableBody.appendChild(newRow);
 
-            app.onlineEntitiesHandler.activateJoinButtons();
-            app.onlineEntitiesHandler.activateLeaveButtons();
         }
+
+        app.onlineEntitiesHandler.activateJoinButtons();
+        app.onlineEntitiesHandler.activateLeaveButtons();
+
     },
 
     newMatchButton: function () {
@@ -252,6 +283,27 @@ app.onlineEntitiesHandler = {
                 var dataPackage = {'gameId': gameId};
                 $.ajax({
                     url: '/api/game-leave',
+                    method: 'POST',
+                    data: dataPackage,
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(ev) {
+                        console.log('ERROR: API calling failed. ' + JSON.stringify(ev));
+                    }
+                });
+            })
+        }
+    },
+
+    activateDeleteGameButtons: function () {
+        var allDeleteButton = document.getElementsByClassName('delete-button');
+        for (buttonIndex = 0; buttonIndex < allDeleteButton.length; buttonIndex++) {
+            allDeleteButton[buttonIndex].addEventListener('click', function (event) {
+                var gameId = $(this).data("gameid");
+                var dataPackage = {'gameId': gameId};
+                $.ajax({
+                    url: '/api/game-delete',
                     method: 'POST',
                     data: dataPackage,
                     success: function(response) {
