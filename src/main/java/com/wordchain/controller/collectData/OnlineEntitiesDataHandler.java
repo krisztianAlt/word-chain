@@ -14,8 +14,7 @@ import java.util.Map;
 @Service
 public class OnlineEntitiesDataHandler {
 
-    public void collectOnlineEntitiesData(@RequestParam Map<String,String> allRequestParams,
-                                  Model model,
+    public void collectOnlineEntitiesData(Model model,
                                   HttpServletRequest httpServletRequest){
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
         String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");

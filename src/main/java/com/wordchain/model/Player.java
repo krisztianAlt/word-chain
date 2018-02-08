@@ -41,20 +41,16 @@ public class Player {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    // @JsonIgnore
     private UserLegitimacy legitimacy;
 
     @ManyToMany
-    // @JsonIgnore
     private List<WordCard> myWordCards;
 
-    //@ManyToMany
-    @ManyToMany(mappedBy = "players")
-    // @JsonIgnore
+    // hints: https://vladmihalcea.com/a-beginners-guide-to-jpa-and-hibernate-cascade-types/
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "players", cascade = CascadeType.ALL)
     private List<Game> games;
 
     @OneToMany(mappedBy = "creator")
-    // @JsonIgnore
     private List<Game> createdGames;
 
     @OneToMany(mappedBy = "player")

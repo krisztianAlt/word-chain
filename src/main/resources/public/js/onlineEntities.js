@@ -136,12 +136,34 @@ app.onlineEntitiesHandler = {
             var gameTypeText = document.createTextNode(myGames[gameIndex].gameType);
             gameType.appendChild(gameTypeText);
 
-            var startButtonCell = document.createElement('td');
+            /*var startButtonCell = document.createElement('td');
             var startButton = document.createElement('button');
             startButton.className = 'btn btn-success btn-sm';
             startButton.classList.add('start-button');
             startButton.textContent = 'Start';
-            startButtonCell.appendChild(startButton);
+            startButtonCell.appendChild(startButton);*/
+
+            // <a th:href="@{'~/' + ${accomodation.getPlanet().getId()}+'/accomodation'}" role="button" class="btn btn-primary"
+
+            var startButtonCell = document.createElement('td');
+            var hiddenForm = document.createElement('form');
+            hiddenForm.setAttribute('action', '/game');
+            hiddenForm.setAttribute('method', 'post');
+
+            var hiddenInputField = document.createElement('input');
+            hiddenInputField.setAttribute('name', 'gameid');
+            hiddenInputField.setAttribute('type', 'hidden');
+            hiddenInputField.setAttribute('value', myGames[gameIndex].gameId);
+            hiddenInputField.setAttribute('th:style', "${'visibility: hidden'}");
+            hiddenForm.appendChild(hiddenInputField);
+
+            var submitButton = document.createElement('button');
+            submitButton.setAttribute('type', 'submit');
+            submitButton.className = 'btn btn-success btn-sm';
+            submitButton.textContent = 'Start';
+            hiddenForm.appendChild(submitButton);
+
+            startButtonCell.appendChild(hiddenForm);
 
             var deleteButtonCell = document.createElement('td');
             var deleteButton = document.createElement('button');

@@ -21,10 +21,19 @@ public class OnlineEntitiesController {
     public String listingOnlineEntities(@RequestParam Map<String,String> allRequestParams,
                                         Model model,
                                         HttpServletRequest httpServletRequest) {
-        onlineEntitiesDataHandler.collectOnlineEntitiesData(allRequestParams, model, httpServletRequest);
+        onlineEntitiesDataHandler.collectOnlineEntitiesData(model, httpServletRequest);
         return "index";
     }
 
+    @RequestMapping(value = "/game", method = RequestMethod.POST)
+    public String startGame(@RequestParam Map<String,String> allRequestParams,
+                          Model model,
+                          HttpServletRequest httpServletRequest){
+        Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
+        Long gameId = Long.parseLong(allRequestParams.get("gameid"));
+        System.out.println("PlayerId: " + playerId + ", GameID: " + gameId);
 
+        return "game";
+    }
 
 }

@@ -4,6 +4,7 @@
 package com.wordchain.api;
 
 import com.wordchain.DAO.QueryHandler;
+import com.wordchain.controller.collectData.OnlineEntitiesDataHandler;
 import com.wordchain.model.Game;
 import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
@@ -24,6 +25,9 @@ import java.util.Map;
 
 @RestController
 public class OnlineEntitiesREST {
+
+    @Autowired
+    OnlineEntitiesDataHandler onlineEntitiesDataHandler;
 
     @Autowired
     QueryHandler queryHandler;
@@ -82,6 +86,15 @@ public class OnlineEntitiesREST {
 
         JsonObject leaveAnswer = factory.createObjectBuilder().add("answer", status).build();
         return leaveAnswer.toString();
+    }
+
+    @PostMapping("/api/game-delete")
+    public String deleteGame(@RequestParam Map<String,String> allRequestParams){
+        Long gameId = Long.parseLong(allRequestParams.get("gameId"));
+        String status = queryHandler.deleteGame(gameId);
+
+        JsonObject deleteGameAnswer = factory.createObjectBuilder().add("answer", status).build();
+        return deleteGameAnswer.toString();
     }
 
     private JsonArrayBuilder getPlayerArrayBuilder() {

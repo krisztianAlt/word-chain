@@ -129,7 +129,6 @@ public class PlayerDataHandler {
 
             if (game.getCreator().getId() == logoutPlayerId &&
                     game.getStatus().equals(GameStatus.NEW)){
-                // game.deleteGame();
                 onlineGames.remove();
             } else {
                 Iterator<Player> playersIter = game.getPlayers().iterator();
@@ -140,11 +139,6 @@ public class PlayerDataHandler {
                         playersIter.remove();
                     }
                 }
-                /*for (Player player : game.getPlayers()){
-                    if (player.getId() == logoutPlayerId){
-                        game.removePlayerFromGame(player);
-                    }
-                }*/
             }
         }
     }

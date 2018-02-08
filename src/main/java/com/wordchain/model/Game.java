@@ -1,19 +1,11 @@
 package com.wordchain.model;
 
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 @NamedQueries({
-        @NamedQuery(
-                name="Game.updatePlayerListOfGame",
-                query= "UPDATE Game g SET g.players = :players WHERE g.id = :gameId"),
         @NamedQuery(
                 name="Game.getGameById",
                 query = "SELECT g FROM Game g WHERE g.id = :gameId"
@@ -39,7 +31,6 @@ public class Game {
     @ManyToOne
     private Player creator;
 
-    //@ManyToMany(mappedBy = "games")
     @ManyToMany
     private List<Player> players;
 
@@ -110,8 +101,22 @@ public class Game {
         this.gameType = gameType;
     }
 
-    public void addNewPlayerToGame(Player newPlayer){
-        this.players.add(newPlayer);
+    public String addNewPlayerToGame(Player newPlayer){
+        String status = "OK";
+        boolean playerIsNotInGame = true;
+
+        for (Player player : players){
+            if (player.getId() == newPlayer.getId()){
+                playerIsNotInGame = false;
+                status = "Player is in this game already.";
+            }
+        }
+
+        if (playerIsNotInGame){
+            this.players.add(newPlayer);
+        }
+
+        return status;
     }
 
     public void removePlayerFromGame(Player player){
