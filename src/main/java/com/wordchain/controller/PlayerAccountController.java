@@ -2,7 +2,6 @@ package com.wordchain.controller;
 
 import com.wordchain.controller.collectData.PlayerDataHandler;
 import com.wordchain.model.Player;
-import com.wordchain.service.DictionaryApiCalling;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -82,14 +80,8 @@ public class PlayerAccountController {
     public String renderLogout(HttpServletRequest httpServletRequest) {
         long logoutPlayerId = (long) httpServletRequest.getSession().getAttribute("player_id");
 
-        Iterator<Player> onlinePlayers = Player.onlinePlayers.iterator();
-
-        while (onlinePlayers.hasNext()) {
-            Player player = onlinePlayers.next();
-
-            if (player.getId() == logoutPlayerId)
-                onlinePlayers.remove();
-        }
+        playerDataHandler.deletePlayerFromOnlinePlayersList(logoutPlayerId);
+        playerDataHandler.deletePlayerFromOnlineGames(logoutPlayerId);
 
         httpServletRequest.getSession().invalidate();
         logger.info("ONLINE PLAYERS: " + Player.onlinePlayers.toString());

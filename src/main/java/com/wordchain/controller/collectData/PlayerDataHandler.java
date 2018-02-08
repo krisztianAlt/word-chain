@@ -1,6 +1,8 @@
 package com.wordchain.controller.collectData;
 
 import com.wordchain.DAO.QueryHandler;
+import com.wordchain.model.Game;
+import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
 import com.wordchain.model.UserLegitimacy;
 import com.wordchain.service.Password;
@@ -10,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PlayerDataHandler {
@@ -111,4 +110,33 @@ public class PlayerDataHandler {
         return false;
     }
 
+    public void deletePlayerFromOnlinePlayersList(long logoutPlayerId) {
+        Iterator<Player> onlinePlayers = Player.onlinePlayers.iterator();
+
+        while (onlinePlayers.hasNext()) {
+            Player player = onlinePlayers.next();
+
+            if (player.getId() == logoutPlayerId)
+                onlinePlayers.remove();
+        }
+    }
+
+    public void deletePlayerFromOnlineGames(long logoutPlayerId) {
+        Iterator<Game> onlineGames = Game.onlineGames.iterator();
+
+        while (onlineGames.hasNext()){
+            Game game = onlineGames.next();
+
+            if (game.getCreator().getId() == logoutPlayerId &&
+                    game.getStatus().equals(GameStatus.NEW)){
+                game.deleteGame();
+            } else {
+                for (Player player : game.getPlayers()){
+                    if (player.getId() == logoutPlayerId){
+                        game.removePlayerFromGame(player);
+                    }
+                }
+            }
+        }
+    }
 }

@@ -48,7 +48,8 @@ public class Player {
     // @JsonIgnore
     private List<WordCard> myWordCards;
 
-    @ManyToMany
+    //@ManyToMany
+    @ManyToMany(mappedBy = "players")
     // @JsonIgnore
     private List<Game> games;
 
@@ -127,6 +128,18 @@ public class Player {
         this.games = games;
     }
 
+    public void addNewGameToCreatedGames(Game game){
+        createdGames.add(game);
+    }
+
+    public void joinToNewGame(Game game){
+        games.add(game);
+    }
+
+    public void leaveGame(Game game) {
+        games.remove(game);
+    }
+
     @Override
     public String toString() {
         return String.format(
@@ -137,5 +150,6 @@ public class Player {
                 userName,
                 legitimacy);
     }
+
 
 }

@@ -43,14 +43,16 @@
 
         <div class="col-6">
             <div class="bs-component">
-                <h3 class="text-center">Opened Games</h3>
 
                 <th:block th:if="${loggedIn}">
-                    <h4>My games</h4>
+
+                    <h3>My games</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr class="table-secondary">
                             <th class="center">Members</th>
+                            <th class="center">Type</th>
+                            <th class="center">Start/Delete</th>
                         </tr>
                         </thead>
 
@@ -60,16 +62,18 @@
 
                     </table>
 
-                    <button id="create-new-match" class="btn btn-info">New Match</button>
+                    <button id="create-new-match" class="btn btn-info">Create New Match</button>
 
                     <br><br><br>
 
-                    <h4>Other's games</h4>
+                    <h3>Other's games</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr class="table-secondary">
                             <th class="center">Creator</th>
                             <th class="center">Members</th>
+                            <th class="center">Type</th>
+                            <th class="center">Join/Leave</th>
                         </tr>
                         </thead>
 
@@ -82,11 +86,13 @@
 
 
                 <th:block th:unless="${loggedIn}">
+                    <h3 class="text-center">Opened Games</h3>
                     <table class="table table-hover">
                         <thead>
                         <tr class="table-secondary">
-                            <th>Creator</th>
-                            <th>Members</th>
+                            <th class="center">Creator</th>
+                            <th class="center">Members</th>
+                            <th class="center">Type</th>
                         </tr>
                         </thead>
 
