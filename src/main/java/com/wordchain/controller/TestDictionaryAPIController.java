@@ -16,7 +16,7 @@ import java.util.List;
 public class TestDictionaryAPIController {
 
     @Autowired
-    DictionaryApiCalling dictionaryApiCalling;
+    private DictionaryApiCalling dictionaryApiCalling;
 
     @RequestMapping(value = "/word-check", method = RequestMethod.GET)
     public String testPage(Model model,

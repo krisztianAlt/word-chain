@@ -1,6 +1,6 @@
 package com.wordchain.service;
 
-import com.wordchain.DAO.QueryHandler;
+import com.wordchain.datahandler.PlayerDatas;
 import com.wordchain.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class PlayerDataValidator {
 
     @Autowired
-    private QueryHandler queryHandler;
+    private PlayerDatas playerDatas;
 
     @Autowired
     private Password password;
@@ -51,7 +51,6 @@ public class PlayerDataValidator {
         return errorMessages;
     }
 
-
     private boolean userNameLenghtIsBad(String userName) {
         if (userName.length() < 5 || userName.length() > 32){
             return true;
@@ -84,7 +83,7 @@ public class PlayerDataValidator {
 
     private boolean emailExists(String email) {
         boolean emailExists = false;
-        Player player = queryHandler.getPlayerByEmail(email);
+        Player player = playerDatas.getPlayerByEmail(email);
         if (player != null){
             emailExists = true;
         }
@@ -98,13 +97,13 @@ public class PlayerDataValidator {
         return false;
     }
 
-    public Map<String, Object> validateLoginDatas(Map<String, String> playerDatas) {
-        String email = playerDatas.get("email");
-        String passwordStr = playerDatas.get("password");
+    public Map<String, Object> validateLoginDatas(Map<String, String> playerDataPackage) {
+        String email = playerDataPackage.get("email");
+        String passwordStr = playerDataPackage.get("password");
 
         List<String> errorMessages = new ArrayList();
 
-        Player playerFromDB = queryHandler.getPlayerByEmail(email);
+        Player playerFromDB = playerDatas.getPlayerByEmail(email);
 
         if (playerFromDB == null) {
             errorMessages.add("Invalid email or password.");

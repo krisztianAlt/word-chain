@@ -1,6 +1,7 @@
 package com.wordchain.controller;
 
-import com.wordchain.controller.collectData.PlayerDataHandler;
+import com.wordchain.controller.collectData.PlayerDataForModel;
+import com.wordchain.datahandler.PlayerDatas;
 import com.wordchain.model.Player;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,10 @@ import java.util.Map;
 public class PlayerAccountController {
 
     @Autowired
-    PlayerDataHandler playerDataHandler;
+    private PlayerDataForModel playerDataForModel;
+
+    @Autowired
+    private PlayerDatas playerDatas;
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(PlayerAccountController.class);
 
@@ -38,7 +42,7 @@ public class PlayerAccountController {
                                Model model,
                                RedirectAttributes redirectAttributes) {
 
-        model = playerDataHandler.collectPlayerRegistrationData(player, confirm, model);
+        model = playerDataForModel.collectPlayerRegistrationData(player, confirm, model);
 
         List<String> errorMessages = (List) model.asMap().get("errors");
 
@@ -60,7 +64,7 @@ public class PlayerAccountController {
     public String renderLogin(@RequestParam Map<String,String> allRequestParams,
                               Model model,
                               HttpServletRequest httpServletRequest) {
-        model = playerDataHandler.collectLoginData(allRequestParams, model);
+        model = playerDataForModel.collectLoginData(allRequestParams, model);
 
         List<String> errorMessages = (List) model.asMap().get("errors");
         Player player = (Player) model.asMap().get("validplayer");
@@ -80,8 +84,8 @@ public class PlayerAccountController {
     public String renderLogout(HttpServletRequest httpServletRequest) {
         long logoutPlayerId = (long) httpServletRequest.getSession().getAttribute("player_id");
 
-        playerDataHandler.deletePlayerFromOnlineGames(logoutPlayerId);
-        playerDataHandler.deletePlayerFromOnlinePlayersList(logoutPlayerId);
+        playerDatas.deletePlayerFromOnlineGames(logoutPlayerId);
+        playerDatas.deletePlayerFromOnlinePlayersList(logoutPlayerId);
 
         httpServletRequest.getSession().invalidate();
         logger.info("ONLINE PLAYERS: " + Player.onlinePlayers.toString());

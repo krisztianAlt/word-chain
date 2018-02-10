@@ -3,8 +3,7 @@
 
 package com.wordchain.api;
 
-import com.wordchain.DAO.QueryHandler;
-import com.wordchain.controller.collectData.OnlineEntitiesDataHandler;
+import com.wordchain.datahandler.GameDatas;
 import com.wordchain.model.Game;
 import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
@@ -15,11 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.json.*;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,10 +22,7 @@ import java.util.Map;
 public class OnlineEntitiesREST {
 
     @Autowired
-    OnlineEntitiesDataHandler onlineEntitiesDataHandler;
-
-    @Autowired
-    QueryHandler queryHandler;
+    private GameDatas gameDatas;
 
     private JsonBuilderFactory factory = Json.createBuilderFactory(null);
 
@@ -62,7 +54,7 @@ public class OnlineEntitiesREST {
     @GetMapping("/api/create-new-match")
     public void createNewMatch(HttpServletRequest httpServletRequest){
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
-        Game newMatch = queryHandler.createNewMatch(playerId);
+        Game newMatch = gameDatas.createNewMatch(playerId);
         Game.onlineGames.add(newMatch);
     }
 
@@ -71,7 +63,7 @@ public class OnlineEntitiesREST {
                          @RequestParam Map<String,String> allRequestParams){
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
         Long gameId = Long.parseLong(allRequestParams.get("gameId"));
-        String status = queryHandler.joinPlayerIntoGame(playerId, gameId);
+        String status = gameDatas.joinPlayerIntoGame(playerId, gameId);
 
         JsonObject answer = factory.createObjectBuilder().add("answer", status).build();
         return answer.toString();
@@ -82,7 +74,7 @@ public class OnlineEntitiesREST {
                            @RequestParam Map<String,String> allRequestParams){
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
         Long gameId = Long.parseLong(allRequestParams.get("gameId"));
-        String status = queryHandler.leaveGame(playerId, gameId);
+        String status = gameDatas.leaveGame(playerId, gameId);
 
         JsonObject leaveAnswer = factory.createObjectBuilder().add("answer", status).build();
         return leaveAnswer.toString();
@@ -91,7 +83,7 @@ public class OnlineEntitiesREST {
     @PostMapping("/api/game-delete")
     public String deleteGame(@RequestParam Map<String,String> allRequestParams){
         Long gameId = Long.parseLong(allRequestParams.get("gameId"));
-        String status = queryHandler.deleteGame(gameId);
+        String status = gameDatas.deleteGame(gameId);
 
         JsonObject deleteGameAnswer = factory.createObjectBuilder().add("answer", status).build();
         return deleteGameAnswer.toString();

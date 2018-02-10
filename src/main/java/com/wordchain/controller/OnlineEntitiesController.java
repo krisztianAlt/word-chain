@@ -1,39 +1,38 @@
 package com.wordchain.controller;
 
-import com.wordchain.controller.collectData.OnlineEntitiesDataHandler;
+import com.wordchain.datahandler.PlayerDatas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @Controller
 public class OnlineEntitiesController {
 
     @Autowired
-    OnlineEntitiesDataHandler onlineEntitiesDataHandler;
+    private PlayerDatas playerDatas;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String listingOnlineEntities(@RequestParam Map<String,String> allRequestParams,
-                                        Model model,
+    public String listingOnlineEntities(Model model,
                                         HttpServletRequest httpServletRequest) {
-        onlineEntitiesDataHandler.collectOnlineEntitiesData(model, httpServletRequest);
-        return "index";
-    }
 
-    @RequestMapping(value = "/game", method = RequestMethod.POST)
-    public String startGame(@RequestParam Map<String,String> allRequestParams,
-                          Model model,
-                          HttpServletRequest httpServletRequest){
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
-        Long gameId = Long.parseLong(allRequestParams.get("gameid"));
-        System.out.println("PlayerId: " + playerId + ", GameID: " + gameId);
+        String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");
 
-        return "game";
+        model.addAttribute("loggedIn", playerId != null);
+        model.addAttribute("playername", playerName);
+        model.addAttribute("onlinePlayers", playerDatas.getOnlinePlayersSortedByUsername());
+
+        if (playerId != null){
+            // TODO: add my match and other's match data for model
+        } else {
+            // TODO: add every new match data for model
+        }
+
+        return "index";
     }
 
 }
