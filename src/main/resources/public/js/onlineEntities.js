@@ -1,8 +1,13 @@
 var app = app || {};
 
+app.init = function() {
+    app.onlineEntitiesHandler.getOnlineEntitiesTimer();
+    app.onlineEntitiesHandler.newMatchButton();
+};
+
 app.onlineEntitiesHandler = {
 
-    getOnlineIntitiesTimer: function () {
+    getOnlineEntitiesTimer: function () {
         setInterval(getOnlineEntities, 3000);
 
         function getOnlineEntities(){
@@ -227,20 +232,42 @@ app.onlineEntitiesHandler = {
             var buttonCell = document.createElement('td');
             var button = document.createElement('button');
 
-            if (playerJoined){
-                button.className = 'btn btn-danger btn-sm';
-                button.classList.add('leave-button');
-                button.textContent = 'Leave';
-            } else {
-                button.className = 'btn btn-success btn-sm';
-                button.classList.add('join-button');
-                button.textContent = 'Join';
-            }
-
             var gameIdAttribute = document.createAttribute("data-gameid");
             gameIdAttribute.value = othersGames[gameIndex].gameId;
             button.setAttributeNode(gameIdAttribute);
-            buttonCell.appendChild(button);
+
+            console.log('GAME STATUS: ' + othersGames[gameIndex].gameStatus);
+
+            if (playerJoined && othersGames[gameIndex].gameStatus === 'PREPARATION'){
+                var hiddenForm = document.createElement('form');
+                hiddenForm.setAttribute('action', '/game');
+                hiddenForm.setAttribute('method', 'post');
+
+                var hiddenInputField = document.createElement('input');
+                hiddenInputField.setAttribute('name', 'gameid');
+                hiddenInputField.setAttribute('type', 'hidden');
+                hiddenInputField.setAttribute('value', othersGames[gameIndex].gameId);
+                hiddenInputField.setAttribute('th:style', "${'visibility: hidden'}");
+                hiddenForm.appendChild(hiddenInputField);
+
+                button.className = 'btn btn-success btn-sm';
+                button.classList.add('start-button');
+                button.textContent = 'Start';
+                hiddenForm.appendChild(button);
+
+                buttonCell.appendChild(hiddenForm);
+
+            } else if (playerJoined && othersGames[gameIndex].gameStatus === 'NEW'){
+                button.className = 'btn btn-danger btn-sm';
+                button.classList.add('leave-button');
+                button.textContent = 'Leave';
+                buttonCell.appendChild(button);
+            } else {
+                button.className = 'btn btn-info btn-sm';
+                button.classList.add('join-button');
+                button.textContent = 'Join';
+                buttonCell.appendChild(button);
+            }
 
             newRow.appendChild(creatorName);
             newRow.appendChild(members);
@@ -340,3 +367,5 @@ app.onlineEntitiesHandler = {
     }
 
 };
+
+$(document).ready(app.init());
