@@ -64,3 +64,34 @@ input::-webkit-input-placeholder {
 .navbar-collapse.collapse.in {
     display: block!important;
 }
+
+#chain-box {
+    margin: auto;
+    alignment: center;
+    height: 260px;
+    width: 300px;
+    border: 5px solid darkslateblue;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+#chain-list {
+    text-align: center;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#word-input-field {
+    width: 300px;
+    text-align: center;
+    display: inline!important;
+    font-size: 1.5rem!important;
+}
+
+#word-input-field::-webkit-input-placeholder {
+    font-size: 1.1rem!important;
+}
+
+#add-word-div {
+    text-align: center;
+}
