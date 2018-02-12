@@ -25,7 +25,7 @@ import java.util.*;
 public class Player {
 
     @Transient
-    public static List<Player> onlinePlayers = new ArrayList<>();
+    public static List<Long> onlinePlayers = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

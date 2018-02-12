@@ -1,9 +1,7 @@
 package com.wordchain.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @NamedQueries({
         @NamedQuery(
@@ -16,7 +14,10 @@ import java.util.List;
 public class Game {
 
     @Transient
-    public static List<Game> onlineGames = new ArrayList<>();
+    public static List<Long> onlineGames = new ArrayList<>();
+
+    @Transient
+    public static Map<Long, Map<Long, Boolean>> playerEnteredIntoGameWindow = new HashMap<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -123,18 +124,4 @@ public class Game {
         players.remove(player);
     }
 
-    public void deleteGame(){
-        onlineGames.remove(this);
-    }
-
-    public void refreshGameInOnlineGames(Game game) {
-        int index = 0;
-        for (Game onlineGame : onlineGames){
-            if (onlineGame.getId() == game.getId()){
-                break;
-            }
-            index++;
-        }
-        onlineGames.set(index, game);
-    }
 }

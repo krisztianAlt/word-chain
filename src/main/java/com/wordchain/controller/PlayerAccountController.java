@@ -72,7 +72,7 @@ public class PlayerAccountController {
         if (errorMessages.size() == 0 && player != null){
             httpServletRequest.getSession().setAttribute("player_id", player.getId());
             httpServletRequest.getSession().setAttribute("player_name", player.getUserName());
-            Player.onlinePlayers.add(player);
+            Player.onlinePlayers.add(player.getId());
             return "redirect:/";
         }
 
@@ -84,7 +84,6 @@ public class PlayerAccountController {
     public String renderLogout(HttpServletRequest httpServletRequest) {
         long logoutPlayerId = (long) httpServletRequest.getSession().getAttribute("player_id");
 
-        playerDatas.deletePlayerFromOnlineGames(logoutPlayerId);
         playerDatas.deletePlayerFromOnlinePlayersList(logoutPlayerId);
 
         httpServletRequest.getSession().invalidate();

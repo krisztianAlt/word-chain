@@ -44,4 +44,10 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     @Query("DELETE FROM Game g WHERE g.id = :gameId")
     void deleteGameById(@Param("gameId") long gameId);
 
+    @Query(value = "UPDATE game SET status = ? WHERE id = ?;",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void changeGameStatus(String status, Long gameId);
+
 }

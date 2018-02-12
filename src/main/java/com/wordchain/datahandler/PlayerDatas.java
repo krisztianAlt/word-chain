@@ -9,10 +9,7 @@ import com.wordchain.service.Password;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PlayerDatas {
@@ -54,46 +51,24 @@ public class PlayerDatas {
     }
 
     public List<Player> getOnlinePlayersSortedByUsername(){
-        Collections.sort(Player.onlinePlayers, new Comparator<Player>() {
+        List<Player> onlinePlayers = new ArrayList<>();
+
+        for (Long playerId : Player.onlinePlayers){
+            onlinePlayers.add(getPlayerById(playerId));
+        }
+
+        Collections.sort(onlinePlayers, new Comparator<Player>() {
             @Override
             public int compare(Player p1, Player p2) {
                 return p1.getUserName().compareTo(p2.getUserName()); // Ascending
             }
         });
-        return Player.onlinePlayers;
+
+        return onlinePlayers;
     }
 
     public void deletePlayerFromOnlinePlayersList(long logoutPlayerId) {
-        Iterator<Player> onlinePlayers = Player.onlinePlayers.iterator();
-
-        while (onlinePlayers.hasNext()) {
-            Player player = onlinePlayers.next();
-
-            if (player.getId() == logoutPlayerId)
-                onlinePlayers.remove();
-        }
-    }
-
-    public void deletePlayerFromOnlineGames(long logoutPlayerId) {
-        Iterator<Game> onlineGames = Game.onlineGames.iterator();
-
-        while (onlineGames.hasNext()){
-            Game game = onlineGames.next();
-
-            if (game.getCreator().getId() == logoutPlayerId &&
-                    game.getStatus().equals(GameStatus.NEW)){
-                onlineGames.remove();
-            } else {
-                Iterator<Player> playersIter = game.getPlayers().iterator();
-
-                while (playersIter.hasNext()){
-                    Player player = playersIter.next();
-                    if (player.getId() == logoutPlayerId){
-                        playersIter.remove();
-                    }
-                }
-            }
-        }
+        Player.onlinePlayers.remove(logoutPlayerId);
     }
 
     public boolean checkUserIsAdmin(long playerId) {

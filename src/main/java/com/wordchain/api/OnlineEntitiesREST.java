@@ -4,6 +4,7 @@
 package com.wordchain.api;
 
 import com.wordchain.datahandler.GameDatas;
+import com.wordchain.datahandler.PlayerDatas;
 import com.wordchain.model.Game;
 import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
@@ -20,6 +21,9 @@ import java.util.Map;
 
 @RestController
 public class OnlineEntitiesREST {
+
+    @Autowired
+    private PlayerDatas playerDatas;
 
     @Autowired
     private GameDatas gameDatas;
@@ -54,8 +58,7 @@ public class OnlineEntitiesREST {
     @GetMapping("/api/create-new-match")
     public void createNewMatch(HttpServletRequest httpServletRequest){
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
-        Game newMatch = gameDatas.createNewMatch(playerId);
-        Game.onlineGames.add(newMatch);
+        gameDatas.createNewMatch(playerId);
     }
 
     @PostMapping("/api/game-join")
@@ -92,7 +95,8 @@ public class OnlineEntitiesREST {
     private JsonArrayBuilder getPlayerArrayBuilder() {
         JsonArrayBuilder jsonPlayerArrayBuilder = factory.createArrayBuilder();
 
-        for (Player player : Player.onlinePlayers){
+        for (Long playerId : Player.onlinePlayers){
+            Player player = playerDatas.getPlayerById(playerId);
             JsonObjectBuilder onlinePlayerBuilder = factory.createObjectBuilder();
             onlinePlayerBuilder.add("playerId", player.getId());
             onlinePlayerBuilder.add("userName", player.getUserName());
@@ -110,17 +114,20 @@ public class OnlineEntitiesREST {
         JsonArrayBuilder jsonOthersGamesArrayBuilder = factory.createArrayBuilder();
         JsonArrayBuilder jsonEveryNewGameArrayBuilder = factory.createArrayBuilder();
 
-        for (Game game : Game.onlineGames){
-            if (game.getStatus().equals(GameStatus.NEW)){
+        for (Long gameId : Game.onlineGames){
+            Game game = gameDatas.getGameById(gameId);
+            if (game.getStatus().equals(GameStatus.NEW) || game.getStatus().equals(GameStatus.PREPARATION)){
 
                 JsonObjectBuilder onlineGamesBuilder = factory.createObjectBuilder();
                 onlineGamesBuilder.add("gameId", game.getId());
                 onlineGamesBuilder.add("creatorName", game.getCreator().getUserName());
                 onlineGamesBuilder.add("gameType", game.getGameType().toString());
+                System.out.println("STATUS: " + game.getStatus());
+                onlineGamesBuilder.add("gameStatus", game.getStatus().toString());
 
                 JsonArrayBuilder jsonPlayersInGameArrayBuilder = factory.createArrayBuilder();
 
-                System.out.println("PLAYERS: " + game.getPlayers().size());
+                // System.out.println("PLAYERS: " + game.getPlayers().size());
                 for (Player player : game.getPlayers()){
                     JsonObjectBuilder playerInGameBuilder = factory.createObjectBuilder();
                     playerInGameBuilder.add("playerId", player.getId());
