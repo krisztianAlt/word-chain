@@ -236,8 +236,6 @@ app.onlineEntitiesHandler = {
             gameIdAttribute.value = othersGames[gameIndex].gameId;
             button.setAttributeNode(gameIdAttribute);
 
-            console.log('GAME STATUS: ' + othersGames[gameIndex].gameStatus);
-
             if (playerJoined && othersGames[gameIndex].gameStatus === 'PREPARATION'){
                 var hiddenForm = document.createElement('form');
                 hiddenForm.setAttribute('action', '/game');
@@ -252,7 +250,7 @@ app.onlineEntitiesHandler = {
 
                 button.className = 'btn btn-success btn-sm';
                 button.classList.add('start-button');
-                button.textContent = 'Start';
+                button.textContent = 'Enter game';
                 hiddenForm.appendChild(button);
 
                 buttonCell.appendChild(hiddenForm);

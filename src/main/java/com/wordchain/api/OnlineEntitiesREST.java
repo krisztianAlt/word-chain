@@ -116,13 +116,13 @@ public class OnlineEntitiesREST {
 
         for (Long gameId : Game.onlineGames){
             Game game = gameDatas.getGameById(gameId);
-            if (game.getStatus().equals(GameStatus.NEW) || game.getStatus().equals(GameStatus.PREPARATION)){
+            if (game.getStatus().equals(GameStatus.NEW) ||
+                    (game.getStatus().equals(GameStatus.PREPARATION) && gameDatas.playerJoinedToGame(playerId, gameId))){
 
                 JsonObjectBuilder onlineGamesBuilder = factory.createObjectBuilder();
                 onlineGamesBuilder.add("gameId", game.getId());
                 onlineGamesBuilder.add("creatorName", game.getCreator().getUserName());
                 onlineGamesBuilder.add("gameType", game.getGameType().toString());
-                System.out.println("STATUS: " + game.getStatus());
                 onlineGamesBuilder.add("gameStatus", game.getStatus().toString());
 
                 JsonArrayBuilder jsonPlayersInGameArrayBuilder = factory.createArrayBuilder();

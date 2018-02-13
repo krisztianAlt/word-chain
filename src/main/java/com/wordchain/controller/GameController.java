@@ -1,6 +1,7 @@
 package com.wordchain.controller;
 
 import com.wordchain.datahandler.GameDatas;
+import com.wordchain.model.GameStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +29,11 @@ public class GameController {
 
         Long creatorID = gameDatas.getCreatorIdByGameId(gameId);
         if (creatorID == playerId){
-            gameDatas.setGameStatusToPreparation(gameId);
+            gameDatas.setGameStatus(gameId, GameStatus.PREPARATION);
         }
         gameDatas.playerEnteredIntoGameWindow(playerId, gameId);
+
+        httpServletRequest.getSession().setAttribute("game_id", gameId);
 
         model.addAttribute("loggedIn", playerId != null);
         model.addAttribute("playername", playerName);

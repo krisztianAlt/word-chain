@@ -95,3 +95,18 @@ input::-webkit-input-placeholder {
 #add-word-div {
     text-align: center;
 }
+
+#message-box {
+    margin: auto;
+    alignment: center;
+    height: 130px;
+    width: 220px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    overflow: auto;
+    font-size: medium;
+}
+
+#message-box-title {
+    text-align: center;
+}

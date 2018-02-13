@@ -14,10 +14,22 @@ import java.util.*;
 public class Game {
 
     @Transient
+    public static final int MAXROUND = 3;
+
+    @Transient
     public static List<Long> onlineGames = new ArrayList<>();
 
     @Transient
     public static Map<Long, Map<Long, Boolean>> playerEnteredIntoGameWindow = new HashMap<>();
+
+    @Transient
+    public static Map<Long, Map<String, Integer>> rounds = new HashMap<>();
+
+    @Transient
+    public static Map<Long, List<Long>> playerOrder = new HashMap<>();
+
+    @Transient
+    public static Map<Long, Map<Long, Integer>> timeResults = new HashMap<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,10 +7,7 @@ import com.wordchain.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class GameDatas {
@@ -102,13 +99,119 @@ public class GameDatas {
         return game.getCreator().getId();
     }
 
-    public void setGameStatusToPreparation(Long gameId){
+    public void setGameStatus(Long gameId, GameStatus gameStatus){
         Game game = getGameById(gameId);
-        game.setStatus(GameStatus.PREPARATION);
+        game.setStatus(gameStatus);
         gameRepository.changeGameStatus(game.getStatus().toString(), gameId);
         // game.refreshGameInOnlineGames(game);
 
-
     }
 
+    public boolean everyPlayerEntered(Long gameId) {
+        Game game = getGameById(gameId);
+        boolean everybodyIsInGameWindow = true;
+        // System.out.println(Game.playerEnteredIntoGameWindow.values());
+
+        for (Player player : game.getPlayers()){
+            if (!Game.playerEnteredIntoGameWindow.get(gameId).get(player.getId())){
+                everybodyIsInGameWindow = false;
+                break;
+            }
+        }
+
+        return everybodyIsInGameWindow;
+    }
+
+    public boolean playerJoinedToGame(Long playerId, Long gameId) {
+        Game game = getGameById(gameId);
+        for (Player player : game.getPlayers()){
+            if (player.getId() == playerId){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getMissingPlayersName(Long gameId) {
+        String missingPlayers = "";
+        Game game = getGameById(gameId);
+
+        for (Player player : game.getPlayers()){
+            if (!Game.playerEnteredIntoGameWindow.get(gameId).get(player.getId())){
+                missingPlayers += player.getUserName() + ", ";
+            }
+        }
+
+
+        return "We are waiting for: " + missingPlayers.substring(0, missingPlayers.length()-2);
+    }
+
+    public void initiatePlayerOrder(Long gameId) {
+        Game game = getGameById(gameId);
+
+        List<Long> playerOrder = new ArrayList<>();
+
+        for (Player player : game.getPlayers()){
+            playerOrder.add(player.getId());
+        }
+
+        Collections.shuffle(playerOrder);
+
+        Game.playerOrder.put(gameId, playerOrder);
+    }
+
+    public void initiateRoundMap(Long gameId) {
+        Map<String, Integer> playerRounds = new HashMap<>();
+        playerRounds.put("maxRound", Game.MAXROUND);
+        playerRounds.put("actualRound", 1);
+        playerRounds.put("actualPlayer", getFirstPlayerId(gameId).intValue());
+        Game.rounds.put(gameId, playerRounds);
+    }
+
+    public String getFirstPlayerName(Long gameId) {
+        Player firstPlayer = playerDatas.getPlayerById(Game.playerOrder.get(gameId).get(0));
+        return firstPlayer.getUserName();
+    }
+
+    public Long getFirstPlayerId(Long gameId) {
+        return Game.playerOrder.get(gameId).get(0);
+    }
+
+
+    public void initiateTimeResultsMap(Long gameId) {
+        Game game = getGameById(gameId);
+        List<Long> playerOrderById = new ArrayList<>();
+
+        for (Player player : game.getPlayers()){
+            playerOrderById.add(player.getId());
+        }
+
+        int lengthOfPlayerOrderList = playerOrderById.size();
+
+        for (int index = 0; index < lengthOfPlayerOrderList; index++){
+            if (index == 0){
+                Map<Long, Integer> playerRounds = new HashMap<>();
+                playerRounds.put(playerOrderById.get(index), 0);
+                Game.timeResults.put(gameId, playerRounds);
+            } else {
+                Game.timeResults.get(gameId).put(playerOrderById.get(index), 0);
+            }
+        }
+    }
+
+    public int getTimeResult(Long gameId, Long playerId) {
+        return Game.timeResults.get(gameId).get(playerId);
+    }
+
+    public String giveFirstWord() {
+        List<String> words = new ArrayList<>();
+        words.add("cat");
+        words.add("table");
+        words.add("dog");
+        words.add("red");
+        words.add("final");
+        words.add("car");
+        Collections.shuffle(words);
+        return words.get(0);
+    }
 }

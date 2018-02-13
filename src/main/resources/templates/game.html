@@ -12,30 +12,64 @@
 
 <div layout:fragment="content" class="container">
 
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="bs-component">
+                <h3 class="text-center">Players</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr class="table-secondary">
+                        <th class="center">Username</th>
+                        <th class="center">Time</th>
+                    </tr>
+                    </thead>
 
+                    <tbody id="player-data-table-body">
+                        <!--player data comes here from JavaScript-->
+                    </tbody>
 
-    <div id="chain-box">
-        <ul id = "chain-list">
-            <!--words come here from JavaScript-->
-        </ul>
-    </div>
-    <br>
-
-    <div id="add-word-div">
-        <div class="form-group">
-            <fieldset>
-                <input class="form-control" id="word-input-field" type="text" placeholder="Type here your new word" autofocus>
-            </fieldset>
+                </table>
+            </div>
         </div>
-        <button type="button" class="btn btn-success" id="add-word">Add word</button>
 
+        <div class="col-lg-4">
+            <div class="bs-component">
+                <div id="chain-box">
+                    <ul id = "chain-list">
+                        <!--words come here from JavaScript-->
+                    </ul>
+                </div>
+                <br>
+                <div id="add-word-div">
+                    <div class="form-group">
+                        <fieldset>
+                            <!--<input class="form-control" id="word-input-field" type="text" placeholder="Type here your new word" disabled>-->
+                            <input class="form-control" id="word-input-field" type="text" disabled>
+                        </fieldset>
+                    </div>
+                    <button type="button" class="btn btn-success" id="add-word" disabled>Add word</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="bs-component">
+                <h3 id="message-box-title">Info</h3>
+                <div id="message-box">
+                    <div id="message-section">
+                        <!--messages come here from JavaScript-->
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <br>
+    <!--<br>
     <button type="button" class="btn btn-success" id="add-word2" disabled>Add word</button>
 
     <br>
-    <button id="add-test">Test Add word</button>
+    <button id="add-test">Test Add word</button>-->
 
 
 </div>
