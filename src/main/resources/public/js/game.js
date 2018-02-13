@@ -17,7 +17,7 @@ app.playTheGame = {
                 method: 'GET',
                 dataType: 'json',
                 success: function(gameData) {
-                    console.log(gameData.gameId);
+                    var gameId = gameData.gameId;
                     var gameStatus = gameData.gameStatus;
                     var message = gameData.currentMessage;
 
@@ -30,17 +30,35 @@ app.playTheGame = {
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
                     } else if (gameStatus === 'STARTING2'){
                         // just we give time for players to read previous message and order table
-                    } else if (gameStatus === 'FIRST_STEP'){
+                    } else if (gameStatus === 'FIRST_STEP' || gameStatus === 'GAMEINPROGRESS_NEXT_PLAYER'){
                         app.playTheGame.addNewMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
                         var ownId = gameData.ownId;
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
 
-                        var firstWord = gameData.firstWord;
-                        app.playTheGame.addWordToChain(firstWord);
-                        app.playTheGame.activateInputFieldAndAddWordButton(activePlayer, ownId);
+                        var lastWord = gameData.lastWord;
+                        app.playTheGame.addWordToChain(lastWord);
+                        app.playTheGame.activateInputFieldAndAddWordButton(activePlayer, ownId, gameId);
+                    } else if (gameStatus === 'GAMEINPROGRESS_WAITING_FOR_GOOD_WORD'){
+                        app.playTheGame.addNewMessage(message);
+                        var playerList = gameData.playerTable;
+                        var activePlayer = gameData.activePlayer;
+                        var ownId = gameData.ownId;
+                        app.playTheGame.refreshPlayersTable(playerList, activePlayer);
+
+                        var lastWord = gameData.lastWord;
+                        app.playTheGame.addWordToChain(lastWord);
+                        app.playTheGame.activateInputFieldAndAddWordButton(activePlayer, ownId, gameId);
+                    } else if (gameStatus === 'CLOSED'){
+                        app.playTheGame.addNewMessage(message);
+                        var playerList = gameData.playerTable;
+                        var activePlayer = gameData.activePlayer;
+                        app.playTheGame.refreshPlayersTable(playerList, activePlayer);
+                        var lastWord = gameData.lastWord;
+                        app.playTheGame.addWordToChain(lastWord);
                     }
+
                 },
                 error: function() {
                     console.log('ERROR: API calling failed.');
@@ -48,21 +66,6 @@ app.playTheGame = {
             });
         }
     },
-
-    /*addTestButton: function () {
-        var addTestButton = document.getElementById("add-test");
-
-        addTestButton.addEventListener('click', function () {
-            var chainBox = document.getElementById("chain-box");
-
-            var chainList = document.getElementById("chain-list");
-            var newWord = document.createElement('li');
-            newWord.innerHTML = "here";
-            chainList.appendChild(newWord);
-
-            chainBox.scrollTop = chainBox.scrollHeight;
-        });
-    },*/
 
     addNewMessage: function (message) {
         // delete previous message
@@ -118,23 +121,39 @@ app.playTheGame = {
         var chainBox = document.getElementById("chain-box");
 
         var chainList = document.getElementById("chain-list");
-        var newWord = document.createElement('li');
-        newWord.innerHTML = word;
-        chainList.appendChild(newWord);
 
-        chainBox.scrollTop = chainBox.scrollHeight;
+        if (chainList.lastChild.textContent !== word){
+            var newWord = document.createElement('li');
+            newWord.innerHTML = word;
+            chainList.appendChild(newWord);
+
+            chainBox.scrollTop = chainBox.scrollHeight;
+        }
+
     },
 
-    activateInputFieldAndAddWordButton: function (activePlayer, ownId) {
+    activateInputFieldAndAddWordButton: function (activePlayer, ownId, gameId) {
         if (activePlayer === ownId){
             var inputField = document.getElementById('word-input-field');
             inputField.removeAttribute('disabled');
             inputField.setAttribute('placeholder', 'Type here your new word');
             inputField.setAttribute('autofocus', '');
 
+
             var addWordButton = document.getElementById('add-word');
             addWordButton.removeAttribute('disabled');
 
+            var gameIdAttribute = document.createAttribute('data-gameId');
+            gameIdAttribute.value = gameId;
+            addWordButton.setAttributeNode(gameIdAttribute);
+
+            var activePlayerIdAttribute = document.createAttribute('data-activePlayerId');
+            activePlayerIdAttribute.value = activePlayer;
+            addWordButton.setAttributeNode(activePlayerIdAttribute);
+
+            var ownIdAttribute = document.createAttribute('data-ownId');
+            ownIdAttribute.value = ownId;
+            addWordButton.setAttributeNode(ownIdAttribute);
         }
     },
 
@@ -145,9 +164,9 @@ app.playTheGame = {
             inputField.removeAttribute('placeholder');
             inputField.setAttribute('disabled', '');
             inputField.value = '';
-
             var addWordButton = document.getElementById('add-word');
             addWordButton.setAttribute('disabled', '');
+            addWordButton.removeAttribute('data-gameid');
 
         }
     },
@@ -157,16 +176,23 @@ app.playTheGame = {
             var addWordButton = document.getElementById('add-word');
             addWordButton.addEventListener('click', function () {
                 var newWord = document.getElementById('word-input-field').value;
-                app.playTheGame.deactivateInputFieldAndAddWordButton();
-                console.log(newWord);
-                var dataPackage = {'newWord': newWord};
+                var gameId = $(this).data("gameid");
+                var activePlayerId = $(this).data("activePlayerId");
+                var ownId = $(this).data("ownId");
+                app.playTheGame.deactivateInputFieldAndAddWordButton(activePlayerId, ownId);
+                console.log(newWord + ", " + gameId);
+                var dataPackage = {'newWord': newWord, 'gameId': gameId};
+                console.log(dataPackage);
                 $.ajax({
                     url: '/api/add-word',
                     method: 'POST',
                     data: dataPackage,
                     dataType: 'json',
                     success: function(response) {
-                        console.log(response)
+                        app.playTheGame.addNewMessage(response.answer);
+                        if (response.answer !== 'Accepted.'){
+                            app.playTheGame.activateInputFieldAndAddWordButton(activePlayerId, ownId, gameId)
+                        }
                     },
                     error: function() {
                         console.log('ERROR: API calling failed.');

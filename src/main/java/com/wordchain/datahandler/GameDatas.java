@@ -199,11 +199,15 @@ public class GameDatas {
         }
     }
 
+    public void initiateWordChain(Long gameId) {
+        Game.wordChains.put(gameId, new ArrayList<>());
+    }
+
     public int getTimeResult(Long gameId, Long playerId) {
         return Game.timeResults.get(gameId).get(playerId);
     }
 
-    public String giveFirstWord() {
+    public String giveFirstWord(Long gameId) {
         List<String> words = new ArrayList<>();
         words.add("cat");
         words.add("table");
@@ -212,6 +216,82 @@ public class GameDatas {
         words.add("final");
         words.add("car");
         Collections.shuffle(words);
-        return words.get(0);
+        String selectedWord = words.get(0);
+        Game.wordChains.get(gameId).add(selectedWord);
+        return selectedWord;
+    }
+
+    public String checkWord(Long gameId, String word, Long playerId) {
+        String status = wordIsValid(gameId, word);
+
+        if (status.equals("Accepted.")){
+            Game.wordChains.get(gameId).add(word);
+            setNextPlayer(gameId);
+
+            if (gameIsOver(gameId)){
+                setGameStatus(gameId, GameStatus.CLOSED);
+                // TODO: save word chain into database
+            } else {
+                setGameStatus(gameId, GameStatus.GAMEINPROGRESS_NEXT_PLAYER);
+            }
+
+        }
+
+        return status;
+    }
+
+    private boolean gameIsOver(Long gameId) {
+        return Game.rounds.get(gameId).get("maxRound") < Game.rounds.get(gameId).get("actualRound");
+    }
+
+    private void setNextPlayer(Long gameId) {
+        Integer actualPlayerId = Game.rounds.get(gameId).get("actualPlayer");
+        int sizeOfPlayerOderList = Game.playerOrder.get(gameId).size();
+        int lastPlayerId = Game.playerOrder.get(gameId).get(sizeOfPlayerOderList-1).intValue();
+        if (actualPlayerId == lastPlayerId){
+            int actualRound = Game.rounds.get(gameId).get("actualRound");
+            Game.rounds.get(gameId).put("actualRound", actualRound + 1);
+            Game.rounds.get(gameId).put("actualPlayer", Game.playerOrder.get(gameId).get(0).intValue());
+        } else {
+            int index = Game.playerOrder.get(gameId).indexOf(actualPlayerId.longValue()) + 1;
+            Game.rounds.get(gameId).put("actualPlayer", Game.playerOrder.get(gameId).get(index).intValue());
+        }
+
+    }
+
+    private String wordIsValid(Long gameId, String word) {
+        String status;
+
+        if (Game.wordChains.get(gameId).contains(word)){
+            status = "This word is already in the chain. Type another one!";
+        } else if (!firstAndLastLetterMatch(gameId, word)){
+            status = "First letter must be the same like previous word's last letter.";
+        } else {
+            status = "Accepted.";
+        }
+
+        return status;
+    }
+
+    private boolean firstAndLastLetterMatch(Long gameId, String word) {
+        int lastWordIndex = Game.wordChains.get(gameId).size() - 1;
+        String previousWord = Game.wordChains.get(gameId).get(lastWordIndex);
+        return previousWord.substring(previousWord.length()-1, previousWord.length()).equals(word.substring(0, 1));
+
+    }
+
+    public String giveLastWord(Long gameId) {
+        int sizeOfWordList = Game.wordChains.get(gameId).size();
+        return Game.wordChains.get(gameId).get(sizeOfWordList-1);
+    }
+
+    public int getActivePlayerId(Long gameId) {
+        return Game.rounds.get(gameId).get("actualPlayer");
+    }
+
+    public String getActivePlayerName(Long gameId) {
+        Long playerId = Game.rounds.get(gameId).get("actualPlayer").longValue();
+        Player player = playerDatas.getPlayerById(playerId);
+        return player.getUserName();
     }
 }

@@ -31,6 +31,9 @@ public class Game {
     @Transient
     public static Map<Long, Map<Long, Integer>> timeResults = new HashMap<>();
 
+    @Transient
+    public static Map<Long, List<String>> wordChains = new HashMap<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

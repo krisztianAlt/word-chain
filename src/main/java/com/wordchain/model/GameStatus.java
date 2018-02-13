@@ -6,6 +6,7 @@ public enum GameStatus {
     STARTING1, // countdown message on client side
     STARTING2, // just give time for players to read their order in game
     FIRST_STEP, // computer gives the first word
-    GAMEINPROGRESS,
+    GAMEINPROGRESS_NEXT_PLAYER,
+    GAMEINPROGRESS_WAITING_FOR_GOOD_WORD,
     CLOSED // last round is over, ranking on client side
 }

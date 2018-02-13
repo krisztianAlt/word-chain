@@ -7,6 +7,8 @@ import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.json.*;
@@ -30,8 +32,6 @@ public class GameREST {
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
         Long gameId = (Long) httpServletRequest.getSession().getAttribute("game_id");
 
-        System.out.println("EVERYBODY: " + gameDatas.everyPlayerEntered(gameId));
-
         Game game = gameDatas.getGameById(gameId);
 
         JsonArrayBuilder jsonPlayersArrayBuilder;
@@ -49,6 +49,7 @@ public class GameREST {
             gameDatas.initiatePlayerOrder(gameId);
             gameDatas.initiateRoundMap(gameId);
             gameDatas.initiateTimeResultsMap(gameId);
+            gameDatas.initiateWordChain(gameId);
         } else if (game.getStatus().equals(GameStatus.STARTING1)){
             jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
             gameDataBuilder.add("currentMessage", "First player will be: " + gameDatas.getFirstPlayerName(gameId) + ". You can follow players' order in left side.");
@@ -59,22 +60,48 @@ public class GameREST {
             gameDatas.setGameStatus(gameId, GameStatus.FIRST_STEP);
         } else if (game.getStatus().equals(GameStatus.FIRST_STEP)){
             jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
-            gameDataBuilder.add("firstWord", gameDatas.giveFirstWord());
+            gameDataBuilder.add("lastWord", gameDatas.giveFirstWord(gameId));
             gameDataBuilder.add("currentMessage", gameDatas.getFirstPlayerName(gameId) + " is thinking.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
             gameDataBuilder.add("activePlayer", gameDatas.getFirstPlayerId(gameId));
-            gameDatas.setGameStatus(gameId, GameStatus.GAMEINPROGRESS);
-        } else if (game.getStatus().equals(GameStatus.GAMEINPROGRESS)){
-            // KITENNI AZ ELŐZŐ BEÉRKEZETT SZÓT
-            // KITENNI AZ IDŐKET A JÁTÉKOSOK TÁBLÁZATÁBA, PLUSZ JELÖLNI OTT, HOGY KI AZ AKTÍV
+            gameDatas.setGameStatus(gameId, GameStatus.GAMEINPROGRESS_WAITING_FOR_GOOD_WORD);
+        } else if(game.getStatus().equals(GameStatus.GAMEINPROGRESS_WAITING_FOR_GOOD_WORD)){
+            jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
+            gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
+            gameDataBuilder.add("currentMessage", gameDatas.getActivePlayerName(gameId) + " is thinking.");
+            gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("activePlayer", gameDatas.getActivePlayerId(gameId));
+        } else if (game.getStatus().equals(GameStatus.GAMEINPROGRESS_NEXT_PLAYER)){
+            jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
+            gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
+            gameDataBuilder.add("currentMessage", gameDatas.getActivePlayerName(gameId) + " is thinking.");
+            gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("activePlayer", gameDatas.getActivePlayerId(gameId));
+            gameDatas.setGameStatus(gameId, GameStatus.GAMEINPROGRESS_WAITING_FOR_GOOD_WORD);
         } else if (game.getStatus().equals(GameStatus.CLOSED)){
-            // AZ INPUT MEZŐ MINDENKINÉL INAKTÍV
-            // ÜZENET: VÉGEREDMÉNY: RANGSOR AZ IDŐKKEL
+            jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
+            gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
+            gameDataBuilder.add("currentMessage", "GAME OVER.");
+            gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("activePlayer", -1);
         }
 
         JsonObject gameData = gameDataBuilder.build();
 
         return gameData.toString();
+    }
+
+    @PostMapping("/api/add-word")
+    public String getNewWord(HttpServletRequest httpServletRequest,
+                             @RequestParam Map<String,String> allRequestParams){
+        Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
+        Long gameId = Long.parseLong(allRequestParams.get("gameId"));
+        String word = allRequestParams.get("newWord");
+
+        String status = gameDatas.checkWord(gameId, word, playerId);
+
+        JsonObject answer = factory.createObjectBuilder().add("answer", status).build();
+        return answer.toString();
     }
 
     private JsonArrayBuilder getPlayerArrayBuilder(Long gameId) {
@@ -94,6 +121,5 @@ public class GameREST {
 
         return jsonPlayerArrayBuilder;
     }
-
 
 }
