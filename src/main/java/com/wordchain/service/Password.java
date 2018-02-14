@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class Password {
 
-    private  int saltInt = 10;
+    private int saltInt = 10;
 
     public String hashPassword(String password) {
         String salt = BCrypt.gensalt(saltInt);
