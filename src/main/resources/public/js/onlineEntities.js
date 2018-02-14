@@ -280,7 +280,7 @@ app.onlineEntitiesHandler = {
 
     },
 
-    newMatchButton: function () {
+    /*newMatchButton: function () {
         try {
             var newMatchButton = document.getElementById('create-new-match');
             newMatchButton.addEventListener('click', function () {
@@ -298,7 +298,7 @@ app.onlineEntitiesHandler = {
         } catch (ev){
             // USER NOT LOGGED IN
         }
-    },
+    },*/
 
     activateJoinButtons: function () {
         var allJoinButton = document.getElementsByClassName('join-button');

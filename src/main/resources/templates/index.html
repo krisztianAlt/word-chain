@@ -62,7 +62,21 @@
 
                     </table>
 
-                    <button id="create-new-match" class="btn btn-info">Create New Match</button>
+                    <form action="/" method="POST">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="round" id="optionsRadios1" value="5" checked="">
+                            5 rounds
+                        </label>
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="round" id="optionsRadios2" value="10">
+                            10 rounds
+                        </label>
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="round" id="optionsRadios3" value="20">
+                            20 rounds
+                        </label>
+                        <button type="submit" class="btn btn-info">Create New Match</button>
+                    </form>
 
                     <br><br><br>
 

@@ -29,15 +29,19 @@ app.playTheGame = {
                         app.playTheGame.addNewInfoMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
+                        var actualRound = gameData.actualRound;
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
+                        app.playTheGame.refreshRound(actualRound);
                     } else if (gameStatus === 'STARTING2'){
                         // just we give time for players to read previous message and order table
                     } else if (gameStatus === 'FIRST_STEP' || gameStatus === 'GAMEINPROGRESS_NEXT_PLAYER'){
                         app.playTheGame.addNewInfoMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
+                        var actualRound = gameData.actualRound;
                         var ownId = gameData.ownId;
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
+                        app.playTheGame.refreshRound(actualRound);
 
                         var lastWord = gameData.lastWord;
                         app.playTheGame.addWordToChain(lastWord);
@@ -46,8 +50,10 @@ app.playTheGame = {
                         app.playTheGame.addNewInfoMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
+                        var actualRound = gameData.actualRound;
                         var ownId = gameData.ownId;
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
+                        app.playTheGame.refreshRound(actualRound);
 
                         var lastWord = gameData.lastWord;
                         app.playTheGame.addWordToChain(lastWord);
@@ -147,6 +153,11 @@ app.playTheGame = {
         }
     },
 
+    refreshRound: function (actualRound) {
+        var roundParagraph = document.getElementById("round");
+        roundParagraph.innerHTML = "Round: " + actualRound;
+    },
+
     addWordToChain: function (word) {
         var chainBox = document.getElementById("chain-box");
 
@@ -167,7 +178,7 @@ app.playTheGame = {
             var inputField = document.getElementById('word-input-field');
             inputField.removeAttribute('disabled');
             inputField.setAttribute('placeholder', 'Type here your new word');
-            inputField.setAttribute('autofocus', '');
+            inputField.focus();
 
             var addWordButton = document.getElementById('add-word');
             addWordButton.removeAttribute('disabled');
@@ -202,7 +213,6 @@ app.playTheGame = {
     deactivateInputFieldAndAddWordButton: function (activePlayer, ownId) {
         if (activePlayer === ownId){
             var inputField = document.getElementById('word-input-field');
-            inputField.removeAttribute('autofocus');
             inputField.removeAttribute('placeholder');
             inputField.setAttribute('disabled', '');
             inputField.value = '';

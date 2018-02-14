@@ -54,6 +54,7 @@ public class GameREST {
             jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
             gameDataBuilder.add("currentMessage", "First player will be: " + gameDatas.getFirstPlayerName(gameId) + ". You can follow players' order in left side.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("actualRound", gameDatas.getActualRound(gameId));
             gameDataBuilder.add("activePlayer", gameDatas.getFirstPlayerId(gameId));
             gameDatas.setGameStatus(gameId, GameStatus.STARTING2);
         } else if (game.getStatus().equals(GameStatus.STARTING2)){
@@ -63,6 +64,7 @@ public class GameREST {
             gameDataBuilder.add("lastWord", gameDatas.giveFirstWord(gameId));
             gameDataBuilder.add("currentMessage", gameDatas.getFirstPlayerName(gameId) + " is thinking.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("actualRound", gameDatas.getActualRound(gameId));
             gameDataBuilder.add("activePlayer", gameDatas.getFirstPlayerId(gameId));
             gameDatas.setGameStatus(gameId, GameStatus.GAMEINPROGRESS_WAITING_FOR_GOOD_WORD);
         } else if(game.getStatus().equals(GameStatus.GAMEINPROGRESS_WAITING_FOR_GOOD_WORD)){
@@ -70,12 +72,14 @@ public class GameREST {
             gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
             gameDataBuilder.add("currentMessage", gameDatas.getActivePlayerName(gameId) + " is thinking.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("actualRound", gameDatas.getActualRound(gameId));
             gameDataBuilder.add("activePlayer", gameDatas.getActivePlayerId(gameId));
         } else if (game.getStatus().equals(GameStatus.GAMEINPROGRESS_NEXT_PLAYER)){
             jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
             gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
             gameDataBuilder.add("currentMessage", gameDatas.getActivePlayerName(gameId) + " is thinking.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("actualRound", gameDatas.getActualRound(gameId));
             gameDataBuilder.add("activePlayer", gameDatas.getActivePlayerId(gameId));
             gameDatas.setGameStatus(gameId, GameStatus.GAMEINPROGRESS_WAITING_FOR_GOOD_WORD);
         } else if (game.getStatus().equals(GameStatus.CLOSED)){

@@ -22,10 +22,10 @@ public class GameDatas {
     @Autowired
     WordCheck wordCheck;
 
-    public Game createNewMatch(Long playerId) {
+    public Game createNewMatch(Long playerId, Integer round) {
         Player player = playerDatas.getPlayerById(playerId);
         Date actualDate = new Date();
-        Game newGame = new Game(player, actualDate);
+        Game newGame = new Game(player, actualDate, round);
         gameRepository.save(newGame);
         Game.onlineGames.add(newGame.getId());
         Map<Long, Boolean> enteredPlayer = new HashMap<>();
@@ -44,18 +44,12 @@ public class GameDatas {
         String status = game.addNewPlayerToGame(player);
         if (status.equals("OK")){
             player.joinToNewGame(game);
-            // game.refreshGameInOnlineGames(game);
             gameRepository.addPlayerToGame(gameId, playerId);
             Game.playerEnteredIntoGameWindow.get(game.getId()).put(playerId, false);
             status = "Joined.";
         }
 
         return status;
-
-        /*List<Player> newPlayerList = game.getPlayers();
-        newPlayerList.add(player);
-        gameRepository.addPlayerToGame(newPlayerList, gameId);
-        return "Joined.";*/
     }
 
     public String leaveGame(Long playerId, Long gameId) {
@@ -63,24 +57,12 @@ public class GameDatas {
         Game game = getGameById(gameId);
         game.removePlayerFromGame(player);
         player.leaveGame(game);
-        // game.refreshGameInOnlineGames(game);
         gameRepository.deletePlayerFromGame(gameId, playerId);
         Game.playerEnteredIntoGameWindow.get(gameId).remove(playerId);
         return "Game is left.";
     }
 
     public String deleteGame(Long deleteGameId) {
-
-        // delete game from online games static list
-        /*Iterator<Game> onlineGamesIterator = Game.onlineGames.iterator();
-
-        while (onlineGamesIterator.hasNext()){
-            Game game = onlineGamesIterator.next();
-
-            if(game.getId() == deleteGameId){
-                onlineGamesIterator.remove();
-            }
-        }*/
         Game.onlineGames.remove(deleteGameId);
 
         // delete game from entered players map:
@@ -93,8 +75,6 @@ public class GameDatas {
     }
 
     public void playerEnteredIntoGameWindow(Long playerId, Long gameId){
-        /*Game game = getGameById(gameId);
-        game.addPlayerToPlayerEnteredIntoGameWindowMap(playerId, true);*/
         Game.playerEnteredIntoGameWindow.get(gameId).put(playerId, true);
     }
 
@@ -107,13 +87,11 @@ public class GameDatas {
         Game game = getGameById(gameId);
         game.setStatus(gameStatus);
         gameRepository.changeGameStatus(game.getStatus().toString(), gameId);
-        // game.refreshGameInOnlineGames(game);
     }
 
     public boolean everyPlayerEntered(Long gameId) {
         Game game = getGameById(gameId);
         boolean everybodyIsInGameWindow = true;
-        // System.out.println(Game.playerEnteredIntoGameWindow.values());
 
         for (Player player : game.getPlayers()){
             if (!Game.playerEnteredIntoGameWindow.get(gameId).get(player.getId())){
@@ -145,7 +123,6 @@ public class GameDatas {
             }
         }
 
-
         return "We are waiting for: " + missingPlayers.substring(0, missingPlayers.length()-2);
     }
 
@@ -164,8 +141,9 @@ public class GameDatas {
     }
 
     public void initiateRoundMap(Long gameId) {
+        Game game = getGameById(gameId);
         Map<String, Integer> playerRounds = new HashMap<>();
-        playerRounds.put("maxRound", Game.MAXROUND);
+        playerRounds.put("maxRound", game.getMaxRound());
         playerRounds.put("actualRound", 1);
         playerRounds.put("actualPlayer", getFirstPlayerId(gameId).intValue());
         Game.rounds.put(gameId, playerRounds);
@@ -251,7 +229,6 @@ public class GameDatas {
             } else {
                 setGameStatus(gameId, GameStatus.GAMEINPROGRESS_NEXT_PLAYER);
             }
-
         }
 
         return status;
@@ -285,7 +262,6 @@ public class GameDatas {
             int index = Game.playerOrder.get(gameId).indexOf(actualPlayerId.longValue()) + 1;
             Game.rounds.get(gameId).put("actualPlayer", Game.playerOrder.get(gameId).get(index).intValue());
         }
-
     }
 
     public String giveLastWord(Long gameId) {
@@ -306,5 +282,9 @@ public class GameDatas {
     public void addSeconds(Long gameId, Long playerId, Integer secondData) {
         Integer previousSecondData = Game.timeResults.get(gameId).get(playerId);
         Game.timeResults.get(gameId).put(playerId, previousSecondData + secondData);
+    }
+
+    public int getActualRound(Long gameId) {
+        return Game.rounds.get(gameId).get("actualRound");
     }
 }

@@ -55,11 +55,11 @@ public class OnlineEntitiesREST {
 
     }
 
-    @GetMapping("/api/create-new-match")
+    /*@GetMapping("/api/create-new-match")
     public void createNewMatch(HttpServletRequest httpServletRequest){
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
         gameDatas.createNewMatch(playerId);
-    }
+    }*/
 
     @PostMapping("/api/game-join")
     public String joinGame(HttpServletRequest httpServletRequest,

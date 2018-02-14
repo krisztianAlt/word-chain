@@ -14,9 +14,6 @@ import java.util.*;
 public class Game {
 
     @Transient
-    public static final int MAXROUND = 3;
-
-    @Transient
     public static List<Long> onlineGames = new ArrayList<>();
 
     @Transient
@@ -58,14 +55,17 @@ public class Game {
 
     private String wordChain;
 
+    private Integer maxRound;
+
     public Game() {}
 
-    public Game(Player creator, Date dateAndTime) {
+    public Game(Player creator, Date dateAndTime, Integer maxRound) {
         this.creator = creator;
         this.dateAndTime = dateAndTime;
         this.status = GameStatus.NEW;
         this.gameType = GameType.Timelimit;
         this.wordChain = "";
+        this.maxRound = maxRound;
         this.players = new ArrayList<>();
         this.players.add(creator);
         creator.addNewGameToCreatedGames(this);
@@ -117,6 +117,14 @@ public class Game {
 
     public void setGameType(GameType gameType) {
         this.gameType = gameType;
+    }
+
+    public Integer getMaxRound() {
+        return maxRound;
+    }
+
+    public void setMaxRound(Integer maxRound) {
+        this.maxRound = maxRound;
     }
 
     public String addNewPlayerToGame(Player newPlayer){
