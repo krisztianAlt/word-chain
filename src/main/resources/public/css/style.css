@@ -99,7 +99,7 @@ input::-webkit-input-placeholder {
 #message-box {
     margin: auto;
     alignment: center;
-    height: 130px;
+    height: 70px;
     width: 220px;
     border: 1px solid gray;
     border-radius: 5px;
@@ -108,5 +108,20 @@ input::-webkit-input-placeholder {
 }
 
 #message-box-title {
+    text-align: center;
+}
+
+#word-message-box {
+    margin: auto;
+    alignment: center;
+    height: 70px;
+    width: 220px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    overflow: auto;
+    font-size: medium;
+}
+
+#word-message-box-title {
     text-align: center;
 }

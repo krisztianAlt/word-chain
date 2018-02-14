@@ -24,16 +24,16 @@ app.playTheGame = {
                     var message = gameData.currentMessage;
 
                     if (gameStatus === 'PREPARATION'){
-                        app.playTheGame.addNewMessage(message);
+                        app.playTheGame.addNewInfoMessage(message);
                     } else if (gameStatus === 'STARTING1'){
-                        app.playTheGame.addNewMessage(message);
+                        app.playTheGame.addNewInfoMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
                     } else if (gameStatus === 'STARTING2'){
                         // just we give time for players to read previous message and order table
                     } else if (gameStatus === 'FIRST_STEP' || gameStatus === 'GAMEINPROGRESS_NEXT_PLAYER'){
-                        app.playTheGame.addNewMessage(message);
+                        app.playTheGame.addNewInfoMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
                         var ownId = gameData.ownId;
@@ -43,7 +43,7 @@ app.playTheGame = {
                         app.playTheGame.addWordToChain(lastWord);
                         app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayer, ownId, gameId);
                     } else if (gameStatus === 'GAMEINPROGRESS_WAITING_FOR_GOOD_WORD'){
-                        app.playTheGame.addNewMessage(message);
+                        app.playTheGame.addNewInfoMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
                         var ownId = gameData.ownId;
@@ -53,7 +53,7 @@ app.playTheGame = {
                         app.playTheGame.addWordToChain(lastWord);
                         app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayer, ownId, gameId);
                     } else if (gameStatus === 'CLOSED'){
-                        app.playTheGame.addNewMessage(message);
+                        app.playTheGame.addNewInfoMessage(message);
                         var playerList = gameData.playerTable;
                         var activePlayer = gameData.activePlayer;
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
@@ -69,7 +69,7 @@ app.playTheGame = {
         }
     },
 
-    addNewMessage: function (message) {
+    addNewInfoMessage: function (message) {
         // delete previous message
         var deleteMessageParagraphs = document.getElementsByClassName('message-paragraph');
         while (deleteMessageParagraphs.length > 0){
@@ -83,6 +83,34 @@ app.playTheGame = {
         var text = document.createTextNode(message);
         newParagraph.appendChild(text);
         messageSection.appendChild(newParagraph);
+    },
+
+    addNewWordMessage: function (message) {
+        // delete previous message
+        var deleteMessageParagraphs = document.getElementsByClassName('word-message-paragraph');
+        while (deleteMessageParagraphs.length > 0){
+            deleteMessageParagraphs[0].remove();
+        }
+
+        // add new message
+        var messageSection = document.getElementById('word-message-section');
+        var newParagraph = document.createElement('p');
+        newParagraph.className = 'word-message-paragraph';
+        var text = document.createTextNode(message);
+        newParagraph.appendChild(text);
+        messageSection.appendChild(newParagraph);
+
+        if (message === 'Accepted.'){
+            var wordMessageTimerVar = setInterval(wordMessageTimer, 3000);
+
+            function wordMessageTimer() {
+                var deleteMessageParagraphs = document.getElementsByClassName('word-message-paragraph');
+                while (deleteMessageParagraphs.length > 0){
+                    deleteMessageParagraphs[0].remove();
+                }
+                clearTimeout(wordMessageTimerVar);
+            }
+        }
     },
 
     refreshPlayersTable: function (playerList, activePlayer) {
@@ -199,16 +227,14 @@ app.playTheGame = {
                 var timerParagraph = document.getElementById("timer");
                 var secondData = timerParagraph.innerHTML.substring(0, timerParagraph.innerHTML.length - 4);
                 app.playTheGame.deactivateInputFieldAndAddWordButton(activePlayerId, ownId);
-                console.log(newWord + ", " + gameId);
                 var dataPackage = {'newWord': newWord, 'gameId': gameId, 'secondData': secondData};
-                console.log(dataPackage);
                 $.ajax({
                     url: '/api/add-word',
                     method: 'POST',
                     data: dataPackage,
                     dataType: 'json',
                     success: function(response) {
-                        app.playTheGame.addNewMessage(response.answer);
+                        app.playTheGame.addNewWordMessage(response.answer);
                         if (response.answer !== 'Accepted.'){
                             app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayerId, ownId, gameId)
                         }
