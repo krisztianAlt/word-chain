@@ -97,7 +97,9 @@ public class GameREST {
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
         Long gameId = Long.parseLong(allRequestParams.get("gameId"));
         String word = allRequestParams.get("newWord");
+        Integer secondData = Integer.parseInt(allRequestParams.get("secondData"));
 
+        gameDatas.addSeconds(gameId, playerId, secondData);
         String status = gameDatas.checkWord(gameId, word, playerId);
 
         JsonObject answer = factory.createObjectBuilder().add("answer", status).build();

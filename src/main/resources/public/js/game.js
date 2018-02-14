@@ -6,6 +6,8 @@ app.init = function () {
     app.playTheGame.addWordButton();
 }
 
+var timerVar;
+
 app.playTheGame = {
 
     getGameDataTimer: function () {
@@ -39,7 +41,7 @@ app.playTheGame = {
 
                         var lastWord = gameData.lastWord;
                         app.playTheGame.addWordToChain(lastWord);
-                        app.playTheGame.activateInputFieldAndAddWordButton(activePlayer, ownId, gameId);
+                        app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayer, ownId, gameId);
                     } else if (gameStatus === 'GAMEINPROGRESS_WAITING_FOR_GOOD_WORD'){
                         app.playTheGame.addNewMessage(message);
                         var playerList = gameData.playerTable;
@@ -49,7 +51,7 @@ app.playTheGame = {
 
                         var lastWord = gameData.lastWord;
                         app.playTheGame.addWordToChain(lastWord);
-                        app.playTheGame.activateInputFieldAndAddWordButton(activePlayer, ownId, gameId);
+                        app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayer, ownId, gameId);
                     } else if (gameStatus === 'CLOSED'){
                         app.playTheGame.addNewMessage(message);
                         var playerList = gameData.playerTable;
@@ -108,7 +110,7 @@ app.playTheGame = {
             playerName.appendChild(playerNameText);
 
             var time = document.createElement('td');
-            var timeText = document.createTextNode(playerList[playerIndex].timeResult);
+            var timeText = document.createTextNode(playerList[playerIndex].timeResult + ' sec');
             time.appendChild(timeText);
 
             newRow.appendChild(playerName);
@@ -132,13 +134,12 @@ app.playTheGame = {
 
     },
 
-    activateInputFieldAndAddWordButton: function (activePlayer, ownId, gameId) {
+    activateInputFieldAndAddWordButtonAndTimer: function (activePlayer, ownId, gameId) {
         if (activePlayer === ownId){
             var inputField = document.getElementById('word-input-field');
             inputField.removeAttribute('disabled');
             inputField.setAttribute('placeholder', 'Type here your new word');
             inputField.setAttribute('autofocus', '');
-
 
             var addWordButton = document.getElementById('add-word');
             addWordButton.removeAttribute('disabled');
@@ -154,6 +155,19 @@ app.playTheGame = {
             var ownIdAttribute = document.createAttribute('data-ownId');
             ownIdAttribute.value = ownId;
             addWordButton.setAttributeNode(ownIdAttribute);
+
+            if (document.getElementById("timer").innerHTML === ""){
+                document.getElementById("timer").innerHTML = "0 sec";
+
+                timerVar = setInterval(timer, 1000);
+
+                function timer() {
+                    var timerParagraph = document.getElementById("timer");
+                    var secondData = timerParagraph.innerHTML.substring(0, timerParagraph.innerHTML.length - 4);
+                    var newSecondData = Number(secondData) + 1;
+                    timerParagraph.innerHTML = newSecondData + " sec";
+                }
+            }
         }
     },
 
@@ -164,10 +178,13 @@ app.playTheGame = {
             inputField.removeAttribute('placeholder');
             inputField.setAttribute('disabled', '');
             inputField.value = '';
+
             var addWordButton = document.getElementById('add-word');
             addWordButton.setAttribute('disabled', '');
             addWordButton.removeAttribute('data-gameid');
 
+            clearTimeout(timerVar);
+            document.getElementById("timer").innerHTML = "";
         }
     },
 
@@ -179,9 +196,11 @@ app.playTheGame = {
                 var gameId = $(this).data("gameid");
                 var activePlayerId = $(this).data("activePlayerId");
                 var ownId = $(this).data("ownId");
+                var timerParagraph = document.getElementById("timer");
+                var secondData = timerParagraph.innerHTML.substring(0, timerParagraph.innerHTML.length - 4);
                 app.playTheGame.deactivateInputFieldAndAddWordButton(activePlayerId, ownId);
                 console.log(newWord + ", " + gameId);
-                var dataPackage = {'newWord': newWord, 'gameId': gameId};
+                var dataPackage = {'newWord': newWord, 'gameId': gameId, 'secondData': secondData};
                 console.log(dataPackage);
                 $.ajax({
                     url: '/api/add-word',
@@ -191,7 +210,7 @@ app.playTheGame = {
                     success: function(response) {
                         app.playTheGame.addNewMessage(response.answer);
                         if (response.answer !== 'Accepted.'){
-                            app.playTheGame.activateInputFieldAndAddWordButton(activePlayerId, ownId, gameId)
+                            app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayerId, ownId, gameId)
                         }
                     },
                     error: function() {
@@ -202,7 +221,7 @@ app.playTheGame = {
         } catch (ev){
             // USER NOT LOGGED IN
         }
-    },
+    }
 
 }
 

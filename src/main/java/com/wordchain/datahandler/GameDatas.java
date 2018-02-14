@@ -262,7 +262,9 @@ public class GameDatas {
     private String wordIsValid(Long gameId, String word) {
         String status;
 
-        if (Game.wordChains.get(gameId).contains(word)){
+        if (word == ""){
+            status = "You did not type word.";
+        } else if (Game.wordChains.get(gameId).contains(word)){
             status = "This word is already in the chain. Type another one!";
         } else if (!firstAndLastLetterMatch(gameId, word)){
             status = "First letter must be the same like previous word's last letter.";
@@ -293,5 +295,10 @@ public class GameDatas {
         Long playerId = Game.rounds.get(gameId).get("actualPlayer").longValue();
         Player player = playerDatas.getPlayerById(playerId);
         return player.getUserName();
+    }
+
+    public void addSeconds(Long gameId, Long playerId, Integer secondData) {
+        Integer previousSecondData = Game.timeResults.get(gameId).get(playerId);
+        Game.timeResults.get(gameId).put(playerId, previousSecondData + secondData);
     }
 }
