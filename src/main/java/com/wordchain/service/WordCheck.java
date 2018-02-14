@@ -26,7 +26,7 @@ public class WordCheck {
         Set<String> properNouns = new HashSet<>();
         String fileName = "src/main/resources/public/data/words";
 
-        try{
+        try {
             FileInputStream fis = new FileInputStream(fileName);
 
             //Construct BufferedReader from InputStreamReader
