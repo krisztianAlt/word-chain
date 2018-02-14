@@ -53,8 +53,10 @@ public class Game {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAndTime;
 
-    @OneToMany(mappedBy = "game")
-    private List<WordChainItem> wordChain;
+    /*@OneToMany(mappedBy = "game")
+    private List<WordChainItem> wordChain;*/
+
+    private String wordChain;
 
     public Game() {}
 
@@ -63,7 +65,7 @@ public class Game {
         this.dateAndTime = dateAndTime;
         this.status = GameStatus.NEW;
         this.gameType = GameType.Timelimit;
-        this.wordChain = new ArrayList<>();
+        this.wordChain = "";
         this.players = new ArrayList<>();
         this.players.add(creator);
         creator.addNewGameToCreatedGames(this);
@@ -93,11 +95,11 @@ public class Game {
         this.creator = creator;
     }
 
-    public List<WordChainItem> getWordChain() {
+    public String getWordChain() {
         return wordChain;
     }
 
-    public void setWordChain(List<WordChainItem> wordChain) {
+    public void setWordChain(String wordChain) {
         this.wordChain = wordChain;
     }
 

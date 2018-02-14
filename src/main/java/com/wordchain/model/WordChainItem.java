@@ -11,15 +11,15 @@ public class WordChainItem {
 
     private String word;
 
-    @ManyToOne
-    private Game game;
+    /*@ManyToOne
+    private Game game;*/
 
     @ManyToOne
     private Player player;
 
     public WordChainItem(String word, Game game, Player player) {
         this.word = word;
-        this.game = game;
+        // this.game = game;
         this.player = player;
     }
 
@@ -39,13 +39,13 @@ public class WordChainItem {
         this.word = word;
     }
 
-    public Game getGame() {
+    /*public Game getGame() {
         return game;
     }
 
     public void setGame(Game game) {
         this.game = game;
-    }
+    }*/
 
     public Player getPlayer() {
         return player;

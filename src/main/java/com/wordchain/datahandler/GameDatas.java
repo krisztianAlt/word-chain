@@ -4,6 +4,7 @@ import com.wordchain.model.Game;
 import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
 import com.wordchain.repository.GameRepository;
+import com.wordchain.service.WordCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class GameDatas {
 
     @Autowired
     PlayerDatas playerDatas;
+
+    @Autowired
+    WordCheck wordCheck;
 
     public Game createNewMatch(Long playerId) {
         Player player = playerDatas.getPlayerById(playerId);
@@ -104,7 +108,6 @@ public class GameDatas {
         game.setStatus(gameStatus);
         gameRepository.changeGameStatus(game.getStatus().toString(), gameId);
         // game.refreshGameInOnlineGames(game);
-
     }
 
     public boolean everyPlayerEntered(Long gameId) {
@@ -215,6 +218,19 @@ public class GameDatas {
         words.add("red");
         words.add("final");
         words.add("car");
+        words.add("book");
+        words.add("bean");
+        words.add("frog");
+        words.add("two");
+        words.add("door");
+        words.add("guitar");
+        words.add("bread");
+        words.add("reptile");
+        words.add("ant");
+        words.add("riot");
+        words.add("cloud");
+        words.add("dark");
+        words.add("revolution");
         Collections.shuffle(words);
         String selectedWord = words.get(0);
         Game.wordChains.get(gameId).add(selectedWord);
@@ -222,14 +238,15 @@ public class GameDatas {
     }
 
     public String checkWord(Long gameId, String word, Long playerId) {
-        String status = wordIsValid(gameId, word);
+        String status = wordCheck.wordIsValid(gameId, word);
 
         if (status.equals("Accepted.")){
             Game.wordChains.get(gameId).add(word);
             setNextPlayer(gameId);
 
-            if (gameIsOver(gameId)){
+            if (isGameOver(gameId)){
                 setGameStatus(gameId, GameStatus.CLOSED);
+                saveWordChain(gameId);
                 // TODO: save word chain into database
             } else {
                 setGameStatus(gameId, GameStatus.GAMEINPROGRESS_NEXT_PLAYER);
@@ -240,7 +257,19 @@ public class GameDatas {
         return status;
     }
 
-    private boolean gameIsOver(Long gameId) {
+    private void saveWordChain(Long gameId) {
+        List<String> words = Game.wordChains.get(gameId);
+        String chain = "";
+
+        for (String word : words){
+            chain += word + ", ";
+        }
+
+        chain = chain.substring(0, chain.length()-2);
+        gameRepository.updateWordChain(chain, gameId);
+    }
+
+    private boolean isGameOver(Long gameId) {
         return Game.rounds.get(gameId).get("maxRound") < Game.rounds.get(gameId).get("actualRound");
     }
 
@@ -256,29 +285,6 @@ public class GameDatas {
             int index = Game.playerOrder.get(gameId).indexOf(actualPlayerId.longValue()) + 1;
             Game.rounds.get(gameId).put("actualPlayer", Game.playerOrder.get(gameId).get(index).intValue());
         }
-
-    }
-
-    private String wordIsValid(Long gameId, String word) {
-        String status;
-
-        if (word == ""){
-            status = "You did not type word.";
-        } else if (Game.wordChains.get(gameId).contains(word)){
-            status = "This word is already in the chain. Type another one!";
-        } else if (!firstAndLastLetterMatch(gameId, word)){
-            status = "First letter must be the same like previous word's last letter.";
-        } else {
-            status = "Accepted.";
-        }
-
-        return status;
-    }
-
-    private boolean firstAndLastLetterMatch(Long gameId, String word) {
-        int lastWordIndex = Game.wordChains.get(gameId).size() - 1;
-        String previousWord = Game.wordChains.get(gameId).get(lastWordIndex);
-        return previousWord.substring(previousWord.length()-1, previousWord.length()).equals(word.substring(0, 1));
 
     }
 

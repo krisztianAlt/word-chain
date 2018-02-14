@@ -50,4 +50,10 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     @Transactional
     void changeGameStatus(String status, Long gameId);
 
+    @Query(value = "UPDATE game SET word_chain = ? WHERE id = ?;",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateWordChain(String chain, Long gameId);
+
 }
