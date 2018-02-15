@@ -24,7 +24,7 @@ public class WordCheck {
     public WordCheck() {
         Set<String> wordSet = new HashSet<>();
         Set<String> properNouns = new HashSet<>();
-        String fileName = "public/data/words";
+        String fileName = "/src/main/resources/public/data/words";
 
         try {
             FileInputStream fis = new FileInputStream(fileName);
