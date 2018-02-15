@@ -225,7 +225,6 @@ public class GameDatas {
             if (isGameOver(gameId)){
                 setGameStatus(gameId, GameStatus.CLOSED);
                 saveWordChain(gameId);
-                // TODO: save word chain into database
             } else {
                 setGameStatus(gameId, GameStatus.GAMEINPROGRESS_NEXT_PLAYER);
             }

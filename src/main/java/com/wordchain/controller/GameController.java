@@ -1,6 +1,7 @@
 package com.wordchain.controller;
 
 import com.wordchain.datahandler.GameDatas;
+import com.wordchain.datahandler.PlayerDatas;
 import com.wordchain.model.GameStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,20 @@ public class GameController {
     @Autowired
     GameDatas gameDatas;
 
-    @RequestMapping(value = "/game", method = RequestMethod.POST)
+    @Autowired
+    PlayerDatas playerDatas;
+
+    @RequestMapping(value = "/game", method = {RequestMethod.POST, RequestMethod.GET})
     public String startGame(@RequestParam Map<String,String> allRequestParams,
                             Model model,
                             HttpServletRequest httpServletRequest){
 
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
+
+        if( playerId == null || !playerDatas.checkUserIsLoggedUserOrAdmin(playerId)){
+            return "redirect:/";
+        }
+
         String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");
         Long gameId = Long.parseLong(allRequestParams.get("gameid"));
 
