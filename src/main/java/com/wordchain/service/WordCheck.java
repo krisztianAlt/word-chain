@@ -25,7 +25,7 @@ public class WordCheck {
         Set<String> wordSet = new HashSet<>();
         Set<String> properNouns = new HashSet<>();
         logger.info("WE ARE HERE");
-        String fileName = "/src/main/resources/public/data/words.csv";
+        String fileName = "src/main/resources/public/data/words.csv";
         logger.info("WE ARE HERE2");
         try {
             logger.info("WE ARE HERE3");
