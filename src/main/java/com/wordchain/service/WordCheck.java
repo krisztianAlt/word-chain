@@ -24,13 +24,9 @@ public class WordCheck {
     public WordCheck() {
         Set<String> wordSet = new HashSet<>();
         Set<String> properNouns = new HashSet<>();
-        logger.info("WE ARE HERE");
         String fileName = "src/main/resources/data/words.csv";
-        logger.info("WE ARE HERE2");
         try {
-            logger.info("WE ARE HERE3");
             FileInputStream fis = new FileInputStream(fileName);
-            logger.info("WE ARE HERE4");
             //Construct BufferedReader from InputStreamReader
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
 
