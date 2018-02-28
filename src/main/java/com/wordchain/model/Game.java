@@ -29,6 +29,9 @@ public class Game {
     public static Map<Long, Map<Long, Integer>> timeResults = new HashMap<>();
 
     @Transient
+    public static Map<Long, Map<Long, Integer>> letters = new HashMap<>();
+
+    @Transient
     public static Map<Long, List<String>> wordChains = new HashMap<>();
 
     @Id

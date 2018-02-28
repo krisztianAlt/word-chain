@@ -44,7 +44,6 @@ public class OnlineEntitiesController {
         String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");
 
         Integer maxRound = Integer.parseInt(allRequestParams.get("round"));
-        System.out.println("ROUND: " + maxRound);
         gameDatas.createNewMatch(playerId, maxRound);
 
         model.addAttribute("loggedIn", playerId != null);

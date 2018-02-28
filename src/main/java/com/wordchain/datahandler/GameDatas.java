@@ -180,12 +180,39 @@ public class GameDatas {
         }
     }
 
+    public void initiateLettersMap(Long gameId) {
+        Game game = getGameById(gameId);
+        List<Long> playerOrderById = new ArrayList<>();
+
+        for (Player player : game.getPlayers()){
+            playerOrderById.add(player.getId());
+        }
+
+        int lengthOfPlayerOrderList = playerOrderById.size();
+
+        for (int index = 0; index < lengthOfPlayerOrderList; index++){
+            if (index == 0){
+                Map<Long, Integer> playerRounds = new HashMap<>();
+                playerRounds.put(playerOrderById.get(index), 0);
+                Game.letters.put(gameId, playerRounds);
+            } else {
+                Game.letters.get(gameId).put(playerOrderById.get(index), 0);
+            }
+        }
+    }
+
     public void initiateWordChain(Long gameId) {
         Game.wordChains.put(gameId, new ArrayList<>());
     }
 
     public int getTimeResult(Long gameId, Long playerId) {
         return Game.timeResults.get(gameId).get(playerId);
+    }
+
+    public int getLetters(Long gameId, Long playerId) {
+
+        return Game.letters.get(gameId).get(playerId);
+
     }
 
     public String giveFirstWord(Long gameId) {
@@ -285,5 +312,10 @@ public class GameDatas {
 
     public int getActualRound(Long gameId) {
         return Game.rounds.get(gameId).get("actualRound");
+    }
+
+    public void addLetters(Long gameId, Long playerId, int newWordLength) {
+        Integer previousLetterNumber = Game.letters.get(gameId).get(playerId);
+        Game.letters.get(gameId).put(playerId, previousLetterNumber + newWordLength);
     }
 }

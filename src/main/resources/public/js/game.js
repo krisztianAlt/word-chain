@@ -147,8 +147,13 @@ app.playTheGame = {
             var timeText = document.createTextNode(playerList[playerIndex].timeResult + ' sec');
             time.appendChild(timeText);
 
+            var letters = document.createElement('td');
+            var lettersText = document.createTextNode(playerList[playerIndex].letters);
+            letters.appendChild(lettersText);
+
             newRow.appendChild(playerName);
             newRow.appendChild(time);
+            newRow.appendChild(letters);
             tableBody.appendChild(newRow);
         }
     },

@@ -49,6 +49,7 @@ public class GameREST {
             gameDatas.initiatePlayerOrder(gameId);
             gameDatas.initiateRoundMap(gameId);
             gameDatas.initiateTimeResultsMap(gameId);
+            gameDatas.initiateLettersMap(gameId);
             gameDatas.initiateWordChain(gameId);
         } else if (game.getStatus().equals(GameStatus.STARTING1)){
             jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
@@ -106,6 +107,10 @@ public class GameREST {
         gameDatas.addSeconds(gameId, playerId, secondData);
         String status = gameDatas.checkWord(gameId, word, playerId);
 
+        if (status.equals("Accepted.")){
+            gameDatas.addLetters(gameId, playerId, word.length());
+        }
+
         JsonObject answer = factory.createObjectBuilder().add("answer", status).build();
         return answer.toString();
     }
@@ -122,6 +127,7 @@ public class GameREST {
             playerBuilder.add("playerId", player.getId());
             playerBuilder.add("userName", player.getUserName());
             playerBuilder.add("timeResult", gameDatas.getTimeResult(gameId, playerId));
+            playerBuilder.add("letters", gameDatas.getLetters(gameId, playerId));
             jsonPlayerArrayBuilder.add(playerBuilder);
         }
 
