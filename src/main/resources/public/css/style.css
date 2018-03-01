@@ -125,3 +125,22 @@ input::-webkit-input-placeholder {
 #word-message-box-title {
     text-align: center;
 }
+
+.form-check-label input[type="radio"] {
+    float: left;
+    margin: 13px 11px 0 0;
+}
+
+.form-check-label span {
+    float: left;
+}
+
+.new-match button {
+    float: right;
+    margin-top: -9px;
+}
+
+.new-match {
+    margin-top: 26px;
+    clear: both;
+}
