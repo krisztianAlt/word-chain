@@ -6,20 +6,6 @@ import com.wordchain.WordChain;
 import javax.persistence.*;
 import java.util.*;
 
-@NamedQueries({
-        @NamedQuery(
-                name = "Player.getAllPlayer",
-                query = "SELECT p FROM Player p"
-        ),
-        @NamedQuery(
-                name="Player.getPlayerByEmail",
-                query = "SELECT p FROM Player p WHERE p.email = :email"
-        ),
-        @NamedQuery(
-                name = "Player.getPlayerById",
-                query = "SELECT p FROM Player p WHERE p.id = :id"
-        )
-})
 @Entity
 @Table(name = "PLAYER")
 public class Player {

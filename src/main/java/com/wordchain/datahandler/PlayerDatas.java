@@ -1,7 +1,5 @@
 package com.wordchain.datahandler;
 
-import com.wordchain.model.Game;
-import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
 import com.wordchain.model.UserLegitimacy;
 import com.wordchain.repository.PlayerRepository;
@@ -25,11 +23,15 @@ public class PlayerDatas {
     }
 
     public Player getPlayerByEmail(String email){
-        return playerRepository.getPlayerByEmail(email);
+
+        return playerRepository.findByEmail(email);
+
     }
 
     public Player getPlayerById(Long playerId){
-        return playerRepository.getPlayerById(playerId);
+
+        return playerRepository.findById(playerId);
+
     }
 
     public boolean savePlayerDatas(Player player) {
@@ -75,7 +77,7 @@ public class PlayerDatas {
 
         Player player = getPlayerById(playerId);
 
-        if (player.getLegitimacy()== UserLegitimacy.ADMIN.ADMIN) {
+        if (player.getLegitimacy()== UserLegitimacy.ADMIN) {
             return true;
 
         }
