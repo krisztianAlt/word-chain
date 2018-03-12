@@ -29,7 +29,7 @@ public class GameController {
 
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
 
-        if( playerId == null || !playerDatas.checkUserIsLoggedUserOrAdmin(playerId)){
+        if (playerId == null || !playerDatas.checkUserIsLoggedUserOrAdmin(playerId)){
             return "redirect:/";
         }
 

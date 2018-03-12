@@ -82,6 +82,13 @@ public class PlayerAccountController {
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String renderLogout(HttpServletRequest httpServletRequest) {
+
+        Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
+
+        if( playerId == null || !playerDatas.checkUserIsLoggedUserOrAdmin(playerId)){
+            return "redirect:/";
+        }
+
         long logoutPlayerId = (long) httpServletRequest.getSession().getAttribute("player_id");
 
         playerDatas.deletePlayerFromOnlinePlayersList(logoutPlayerId);
