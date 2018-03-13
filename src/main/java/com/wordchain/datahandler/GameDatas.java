@@ -35,7 +35,9 @@ public class GameDatas {
     }
 
     public Game getGameById(Long gameId){
-        return gameRepository.getGameById(gameId);
+
+        return gameRepository.findById(gameId);
+
     }
 
     public String joinPlayerIntoGame(Long playerId, Long gameId) {
@@ -62,14 +64,14 @@ public class GameDatas {
         return "Game is left.";
     }
 
-    public String deleteGame(Long deleteGameId) {
-        Game.onlineGames.remove(deleteGameId);
+    public String deleteGame(Long gameId) {
+        Game.onlineGames.remove(gameId);
 
         // delete game from entered players map:
-        Game.playerEnteredIntoGameWindow.remove(deleteGameId);
+        Game.playerEnteredIntoGameWindow.remove(gameId);
 
         // delete game from database (from game and game_players tables)
-        gameRepository.deleteGameById(deleteGameId);
+        gameRepository.delete(gameId);
 
         return "Deleted.";
     }
@@ -86,7 +88,7 @@ public class GameDatas {
     public void setGameStatus(Long gameId, GameStatus gameStatus){
         Game game = getGameById(gameId);
         game.setStatus(gameStatus);
-        gameRepository.changeGameStatus(game.getStatus().toString(), gameId);
+        gameRepository.save(game);
     }
 
     public boolean everyPlayerEntered(Long gameId) {
@@ -239,6 +241,7 @@ public class GameDatas {
         Collections.shuffle(words);
         String selectedWord = words.get(0);
         Game.wordChains.get(gameId).add(selectedWord);
+        saveWordChain(gameId);
         return selectedWord;
     }
 
@@ -247,6 +250,7 @@ public class GameDatas {
 
         if (status.equals("Accepted.")){
             Game.wordChains.get(gameId).add(word);
+            saveWordChain(gameId);
             setNextPlayer(gameId);
 
             if (isGameOver(gameId)){
@@ -269,7 +273,9 @@ public class GameDatas {
         }
 
         chain = chain.substring(0, chain.length()-2);
-        gameRepository.updateWordChain(chain, gameId);
+        Game game = gameRepository.findById(gameId);
+        game.setWordChain(chain);
+        gameRepository.save(game);
     }
 
     private boolean isGameOver(Long gameId) {

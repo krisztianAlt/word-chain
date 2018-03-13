@@ -29,7 +29,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     @Transactional
     void addPlayerToGame(Long gameId, Long playerId);
 
-
     @Query(value = "DELETE FROM game_players " +
             "WHERE games_id = ? AND players_id = ?;",
             nativeQuery = true)
@@ -37,23 +36,26 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     @Transactional
     void deletePlayerFromGame(Long gameId, Long playerId);
 
-    Game getGameById(@Param("gameId") long gameId);
+    Game findById(Long gameId);
 
-    @Transactional
+    /*@Transactional
     @Modifying
     @Query("DELETE FROM Game g WHERE g.id = :gameId")
-    void deleteGameById(@Param("gameId") long gameId);
+    void deleteGameById(@Param("gameId") long gameId);*/
 
-    @Query(value = "UPDATE game SET status = ? WHERE id = ?;",
+    @Override
+    void delete(Long gameId);
+
+    /*@Query(value = "UPDATE game SET status = ? WHERE id = ?;",
             nativeQuery = true)
     @Modifying
     @Transactional
-    void changeGameStatus(String status, Long gameId);
+    void changeGameStatus(String status, Long gameId);*/
 
-    @Query(value = "UPDATE game SET word_chain = ? WHERE id = ?;",
+    /*@Query(value = "UPDATE game SET word_chain = ? WHERE id = ?;",
             nativeQuery = true)
     @Modifying
     @Transactional
-    void updateWordChain(String chain, Long gameId);
+    void updateWordChain(String chain, Long gameId);*/
 
 }

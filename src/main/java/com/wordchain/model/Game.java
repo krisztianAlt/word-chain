@@ -3,12 +3,6 @@ package com.wordchain.model;
 import javax.persistence.*;
 import java.util.*;
 
-@NamedQueries({
-        @NamedQuery(
-                name="Game.getGameById",
-                query = "SELECT g FROM Game g WHERE g.id = :gameId"
-        )
-})
 @Entity
 @Table
 public class Game {
@@ -36,7 +30,7 @@ public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private GameStatus status;
@@ -82,11 +76,11 @@ public class Game {
         this.players = players;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
