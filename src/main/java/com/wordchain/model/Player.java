@@ -33,7 +33,17 @@ public class Player {
     private List<WordCard> myWordCards;
 
     // hints: https://vladmihalcea.com/a-beginners-guide-to-jpa-and-hibernate-cascade-types/
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "players", cascade = CascadeType.ALL)
+    /*@ManyToMany(fetch = FetchType.EAGER, mappedBy = "players", cascade = CascadeType.ALL)
+    private List<Game> games;*/
+
+    /*@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            joinColumns = {@JoinColumn(name = "player_id")},
+            inverseJoinColumns = {@JoinColumn(name = "game_id")}
+    )
+    private List<Game> games;*/
+
+    @ManyToMany(mappedBy = "players")
     private List<Game> games;
 
     @OneToMany(mappedBy = "creator")

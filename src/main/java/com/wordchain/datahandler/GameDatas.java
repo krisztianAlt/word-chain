@@ -4,6 +4,7 @@ import com.wordchain.model.Game;
 import com.wordchain.model.GameStatus;
 import com.wordchain.model.Player;
 import com.wordchain.repository.GameRepository;
+import com.wordchain.repository.PlayerRepository;
 import com.wordchain.service.WordCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class GameDatas {
 
     @Autowired
     GameRepository gameRepository;
-
+    
     @Autowired
     PlayerDatas playerDatas;
 
@@ -45,8 +46,8 @@ public class GameDatas {
         Game game = getGameById(gameId);
         String status = game.addNewPlayerToGame(player);
         if (status.equals("OK")){
-            player.joinToNewGame(game);
-            gameRepository.addPlayerToGame(gameId, playerId);
+            game.addNewPlayerToGame(player);
+            gameRepository.save(game);
             Game.playerEnteredIntoGameWindow.get(game.getId()).put(playerId, false);
             status = "Joined.";
         }
@@ -58,8 +59,7 @@ public class GameDatas {
         Player player = playerDatas.getPlayerById(playerId);
         Game game = getGameById(gameId);
         game.removePlayerFromGame(player);
-        player.leaveGame(game);
-        gameRepository.deletePlayerFromGame(gameId, playerId);
+        gameRepository.save(game);
         Game.playerEnteredIntoGameWindow.get(gameId).remove(playerId);
         return "Game is left.";
     }
@@ -71,8 +71,8 @@ public class GameDatas {
         Game.playerEnteredIntoGameWindow.remove(gameId);
 
         // delete game from database (from game and game_players tables)
-        gameRepository.delete(gameId);
-
+        Game game = gameRepository.findById(gameId);
+        gameRepository.delete(game);
         return "Deleted.";
     }
 

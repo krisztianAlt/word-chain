@@ -41,7 +41,17 @@ public class Game {
     @ManyToOne
     private Player creator;
 
-    @ManyToMany
+    /*@ManyToMany
+    private List<Player> players;*/
+
+    /*@ManyToMany(mappedBy = "games")
+    private List<Player> players;*/
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            joinColumns = {@JoinColumn(name = "game_id")},
+            inverseJoinColumns = {@JoinColumn(name = "player_id")}
+    )
     private List<Player> players;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -60,7 +70,7 @@ public class Game {
         this.creator = creator;
         this.dateAndTime = dateAndTime;
         this.status = GameStatus.NEW;
-        this.gameType = GameType.Timelimit;
+        this.gameType = GameType.Timing;
         this.wordChain = "";
         this.maxRound = maxRound;
         this.players = new ArrayList<>();
