@@ -33,11 +33,18 @@ public class GameController {
             return "redirect:/";
         }
 
+        Long gameIdFromSession = (Long) httpServletRequest.getSession().getAttribute("game_id");
+
         String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");
         Long gameId = Long.parseLong(allRequestParams.get("gameid"));
 
+        if (gameIdFromSession != null && gameIdFromSession != gameId){
+            httpServletRequest.getSession().removeAttribute("game_id");
+            gameIdFromSession = null;
+        }
+
         Long creatorID = gameDatas.getCreatorIdByGameId(gameId);
-        if (creatorID == playerId){
+        if (creatorID == playerId && gameIdFromSession == null){
             gameDatas.setGameStatus(gameId, GameStatus.PREPARATION);
         }
         gameDatas.playerEnteredIntoGameWindow(playerId, gameId);

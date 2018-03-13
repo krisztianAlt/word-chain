@@ -89,6 +89,7 @@ public class GameREST {
             gameDataBuilder.add("currentMessage", "GAME OVER.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
             gameDataBuilder.add("activePlayer", -1);
+            httpServletRequest.getSession().removeAttribute("game_id");
         }
 
         JsonObject gameData = gameDataBuilder.build();

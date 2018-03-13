@@ -40,6 +40,7 @@ public class OnlineEntitiesController {
     public String createNewMatch(Model model,
                                HttpServletRequest httpServletRequest,
                                @RequestParam Map<String,String> allRequestParams){
+
         Long playerId = (Long) httpServletRequest.getSession().getAttribute("player_id");
         String playerName = (String) httpServletRequest.getSession().getAttribute("player_name");
 

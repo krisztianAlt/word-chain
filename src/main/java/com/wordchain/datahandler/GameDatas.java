@@ -16,7 +16,7 @@ public class GameDatas {
 
     @Autowired
     GameRepository gameRepository;
-    
+
     @Autowired
     PlayerDatas playerDatas;
 
@@ -87,8 +87,10 @@ public class GameDatas {
 
     public void setGameStatus(Long gameId, GameStatus gameStatus){
         Game game = getGameById(gameId);
-        game.setStatus(gameStatus);
-        gameRepository.save(game);
+        if (!game.getStatus().equals(GameStatus.CLOSED)){
+            game.setStatus(gameStatus);
+            gameRepository.save(game);
+        }
     }
 
     public boolean everyPlayerEntered(Long gameId) {
