@@ -2,7 +2,7 @@ var app = app || {};
 
 app.init = function() {
     app.onlineEntitiesHandler.getOnlineEntitiesTimer();
-    app.onlineEntitiesHandler.newMatchButton();
+    // app.onlineEntitiesHandler.newMatchButton();
 };
 
 app.onlineEntitiesHandler = {
