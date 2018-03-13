@@ -11,7 +11,7 @@ var timerVar;
 app.playTheGame = {
 
     getGameDataTimer: function () {
-        setInterval(getGameData, 2000);
+        var timer = setInterval(getGameData, 2000);
 
         function getGameData(){
             $.ajax({
@@ -65,6 +65,7 @@ app.playTheGame = {
                         app.playTheGame.refreshPlayersTable(playerList, activePlayer);
                         var lastWord = gameData.lastWord;
                         app.playTheGame.addWordToChain(lastWord);
+                        clearTimeout(timer);
                     }
 
                 },
