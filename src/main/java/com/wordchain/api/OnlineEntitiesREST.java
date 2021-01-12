@@ -124,6 +124,7 @@ public class OnlineEntitiesREST {
                 onlineGamesBuilder.add("creatorName", game.getCreator().getUserName());
                 onlineGamesBuilder.add("gameType", game.getGameType().toString());
                 onlineGamesBuilder.add("gameStatus", game.getStatus().toString());
+                onlineGamesBuilder.add("round", game.getMaxRound().toString());
 
                 JsonArrayBuilder jsonPlayersInGameArrayBuilder = factory.createArrayBuilder();
 
