@@ -97,7 +97,7 @@
             <artifactId>org.eclipse.persistence.jpa</artifactId>
             <version>${version.eclipselink}</version>
         </dependency>
-            
+        
     </dependencies>
 
     <build>

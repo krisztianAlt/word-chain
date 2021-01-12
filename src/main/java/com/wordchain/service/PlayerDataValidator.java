@@ -22,23 +22,27 @@ public class PlayerDataValidator {
     private Password password;
 
     public List<String> validateRegistrationDatas(Player player, String confirm) {
-        List<String> errorMessages = new ArrayList();
+        List<String> errorMessages = new ArrayList<String>();
 
         if (userNameLenghtIsBad(player.getUserName())){
             errorMessages.add("Username must be a minimum of 5 characters and a maximum 32 characters.");
         }
 
         if (userNameContainsInvalidCharacters(player.getUserName())){
-            errorMessages.add("Only letters, numbers, '-', '.', and '_' may be used in the username.");
+            errorMessages.add("Only letters, numbers, '-', '.', and '_' may be used in the user name.");
         }
 
-        if (emailFormatIsBad(player.getEmail())){
+        if (userNameExists(player.getUserName())) {
+        	errorMessages.add("This user name is already exists in our database. Please, give another one.");
+        }
+        
+        /*if (emailFormatIsBad(player.getEmail())){
             errorMessages.add("Type email in this format: john.doe@fantasymail.com");
         }
 
         if (emailExists(player.getEmail())){
             errorMessages.add("This email is already exists in our database. Give another one.");
-        }
+        }*/
 
         if (passwordLenghtIsBad(player.getPassword())){
             errorMessages.add("Password must be a minimum of 5 characters and a maximum 55 characters.");
@@ -73,7 +77,16 @@ public class PlayerDataValidator {
         return false;
     }
 
-    private boolean emailFormatIsBad(String email) {
+    private boolean userNameExists(String userName) {
+        boolean userNameExists = false;
+        Player player = playerDatas.getPlayerByUserName(userName);
+        if (player != null){
+        	userNameExists = true;
+        }
+        return userNameExists;
+    }
+    
+    /*private boolean emailFormatIsBad(String email) {
         Pattern compiledPattern = Pattern.compile(
                 "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                         + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
@@ -88,7 +101,7 @@ public class PlayerDataValidator {
             emailExists = true;
         }
         return emailExists;
-    }
+    }*/
 
     private boolean passwordLenghtIsBad(String password) {
         if (password.length() < 5 || password.length() > 55){
@@ -98,18 +111,22 @@ public class PlayerDataValidator {
     }
 
     public Map<String, Object> validateLoginDatas(Map<String, String> playerDataPackage) {
-        String email = playerDataPackage.get("email");
+        String username = playerDataPackage.get("username");
         String passwordStr = playerDataPackage.get("password");
 
-        List<String> errorMessages = new ArrayList();
+        List<String> errorMessages = new ArrayList<String>();
 
-        Player playerFromDB = playerDatas.getPlayerByEmail(email);
+        Player playerFromDB = playerDatas.getPlayerByUserName(username);
 
         if (playerFromDB == null) {
-            errorMessages.add("Invalid email or password.");
+            errorMessages.add("Invalid user name or password.");
         } else {
             if (!password.checkPassword(passwordStr,playerFromDB.getPassword())) {
-                errorMessages.add("Invalid email or password.");
+                errorMessages.add("Invalid user name or password.");
+            } else {
+            	if (playerIsAlreadyLoggedIn(playerFromDB)) {
+            		errorMessages.add("You have already logged in. Please, push 'Main Page' in the menu.");
+            	}
             }
         }
 
@@ -118,5 +135,12 @@ public class PlayerDataValidator {
         result.put("player", playerFromDB);
         return result;
     }
-
+    
+    private boolean playerIsAlreadyLoggedIn(Player playerFromDB) {
+        if (Player.onlinePlayers.contains(playerFromDB.getId())){
+            return true;
+        }
+        return false;
+    }
+    
 }

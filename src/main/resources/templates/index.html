@@ -15,18 +15,18 @@
     <th:block th:if="${newplayersaved}">
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Registration succeeded! If you want to book rooms, please, log in.</strong>
+            <strong>Registration succeeded! If you want to play, please, log in.</strong>
         </div>
     </th:block>
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
             <div class="bs-component">
                 <h3 class="text-center">Online Players</h3>
                 <table class="table table-hover">
                     <thead>
                         <tr class="table-secondary">
-                            <th class="center">Username</th>
+                            <th class="center">User Name</th>
                         </tr>
                     </thead>
 
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
             <div class="bs-component">
 
                 <th:block th:if="${loggedIn}">
@@ -61,21 +61,37 @@
                         </tbody>
 
                     </table>
-
+					
+					<br><br>
+					
+					<h4>Create new game</h4>
                     <form action="/" method="POST" class="new-match">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="round" id="optionsRadios1" value="5" checked="">
-                            <span>5 rounds</span>
-                        </label>
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="round" id="optionsRadios2" value="10">
-                            <span>10 rounds</span>
-                        </label>
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="round" id="optionsRadios3" value="20">
-                            <span>20 rounds</span>
-                        </label>
-                        <button type="submit" class="btn btn-info">Create New Match</button>
+                    	<div class="row">
+                    		<div class="col-sm">
+			                   	<label class="form-check-label">
+		                           <input type="radio" class="form-check-input" name="round" id="optionsRadios1" value="5" checked="">
+		                           <span>5 rounds</span>
+		                       </label>
+		                  	</div>
+		                  	<div class="col-sm">
+		                       <label class="form-check-label">
+		                           <input type="radio" class="form-check-input" name="round" id="optionsRadios2" value="10">
+		                           <span>10 rounds</span>
+		                       </label>
+	                       </div>
+	                       <div class="col-sm">
+		                       <label class="form-check-label">
+		                           <input type="radio" class="form-check-input" name="round" id="optionsRadios3" value="20">
+		                           <span>20 rounds</span>
+		                       </label>
+	                       </div>
+                    	</div>
+                    	<br>
+                        <div class="row justify-content-center">
+                        	<div class="col-sm">
+                        		<button type="submit" class="btn btn-info">Create New Match</button>
+                        	</div>
+                        </div>
                     </form>
 
                     <br><br><br>

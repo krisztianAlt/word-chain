@@ -17,11 +17,12 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(unique = true, nullable = false)
     private String userName;
 
-    @Column(unique = true, nullable = false)
+    /*@Column(unique = true, nullable = false)
     @JsonIgnore
-    private String email;
+    private String email;*/
 
     @JsonIgnore
     private String password;
@@ -55,9 +56,9 @@ public class Player {
     public Player() {
     }
 
-    public Player(String userName, String email, String password, UserLegitimacy legitimacy) {
+    public Player(String userName, String password, UserLegitimacy legitimacy) {
         this.userName = userName;
-        this.email = email;
+        // this.email = email;
         this.password = password;
         this.legitimacy = legitimacy;
         // this.myWordCards = new ArrayList<>();
@@ -80,13 +81,13 @@ public class Player {
         this.userName = userName;
     }
 
-    public String getEmail() {
+    /*public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
+    }*/
 
     public String getPassword() {
         return password;

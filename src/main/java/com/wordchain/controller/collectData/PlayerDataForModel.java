@@ -47,7 +47,8 @@ public class PlayerDataForModel {
         Map<String, String> playerDatas = new HashMap<>();
         Player player = null;
         if (allRequestParams.size() > 0){
-            playerDatas.put("email", allRequestParams.get("email"));
+            // playerDatas.put("email", allRequestParams.get("email"));
+        	playerDatas.put("username", allRequestParams.get("username"));
             playerDatas.put("password", allRequestParams.get("password"));
 
             Map<String, Object> errorMessagesAndPlayer = playerDataValidator.validateLoginDatas(playerDatas);

@@ -22,11 +22,17 @@ public class PlayerDatas {
         playerRepository.save(player);
     }
 
-    public Player getPlayerByEmail(String email){
+    public Player getPlayerByUserName(String userName){
+
+        return playerRepository.findByUserName(userName);
+
+    }
+    
+    /*public Player getPlayerByEmail(String email){
 
         return playerRepository.findByEmail(email);
 
-    }
+    }*/
 
     public Player getPlayerById(Long playerId){
 
