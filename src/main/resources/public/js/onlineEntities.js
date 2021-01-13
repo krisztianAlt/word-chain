@@ -103,7 +103,7 @@ app.onlineEntitiesHandler = {
             members.appendChild(memberList);
 
             var gameType = document.createElement('td');
-            var gameTypeText = document.createTextNode(everyGame[gameIndex].gameType + '/' + everyGame[gameIndex].round + ' round');
+            var gameTypeText = document.createTextNode(everyGame[gameIndex].round + ' round');
             gameType.appendChild(gameTypeText);
 
             newRow.appendChild(creatorName);
@@ -138,7 +138,7 @@ app.onlineEntitiesHandler = {
             members.appendChild(memberList);
 
             var gameType = document.createElement('td');
-            var gameTypeText = document.createTextNode(myGames[gameIndex].gameType + '/' + myGames[gameIndex].round + ' round');
+            var gameTypeText = document.createTextNode(myGames[gameIndex].round + ' round');
             gameType.appendChild(gameTypeText);
 
             /*var startButtonCell = document.createElement('td');
@@ -245,7 +245,7 @@ app.onlineEntitiesHandler = {
             members.appendChild(memberList);
 
             var gameType = document.createElement('td');
-            var gameTypeText = document.createTextNode(othersGames[gameIndex].gameType + '/' + othersGames[gameIndex].round + ' round');
+            var gameTypeText = document.createTextNode(othersGames[gameIndex].round + ' round');
             gameType.appendChild(gameTypeText);
 
             var buttonCell = document.createElement('td');
@@ -394,7 +394,7 @@ app.onlineEntitiesHandler = {
                 method: 'POST',
                 data: dataPackage,
                 success: function(response) {
-                    console.log(response);
+                    console.log("API calling succeeded.");
                 },
                 error: function(ev) {
                     console.log('ERROR: API calling failed. ' + JSON.stringify(ev));

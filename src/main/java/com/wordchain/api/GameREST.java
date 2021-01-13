@@ -86,7 +86,7 @@ public class GameREST {
         } else if (game.getStatus().equals(GameStatus.CLOSED)){
             jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
             gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
-            gameDataBuilder.add("currentMessage", "GAME OVER.");
+            gameDataBuilder.add("currentMessage", "GAME OVER. Please, push 'Main Page' in the menu.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
             gameDataBuilder.add("activePlayer", -1);
             httpServletRequest.getSession().removeAttribute("game_id");

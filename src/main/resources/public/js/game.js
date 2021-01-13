@@ -3,6 +3,7 @@ var app = app || {};
 app.init = function () {
     app.playTheGame.getGameDataTimer()
     // app.playTheGame.addTestButton();
+    app.playTheGame.wordInputField();
     app.playTheGame.addWordButton();
 }
 
@@ -182,25 +183,35 @@ app.playTheGame = {
     activateInputFieldAndAddWordButtonAndTimer: function (activePlayer, ownId, gameId) {
         if (activePlayer === ownId){
             var inputField = document.getElementById('word-input-field');
-            inputField.removeAttribute('disabled');
             inputField.setAttribute('placeholder', 'Type here your new word');
-            inputField.focus();
-
+            
             var addWordButton = document.getElementById('add-word');
-            addWordButton.removeAttribute('disabled');
-
-            var gameIdAttribute = document.createAttribute('data-gameId');
+            
+            var gameIdAttribute = document.createAttribute('data-gameid');
             gameIdAttribute.value = gameId;
             addWordButton.setAttributeNode(gameIdAttribute);
-
-            var activePlayerIdAttribute = document.createAttribute('data-activePlayerId');
+            var inputFieldGameIdAttribute = document.createAttribute('data-inputfieldgameid');
+            inputFieldGameIdAttribute.value = gameId;
+            inputField.setAttributeNode(inputFieldGameIdAttribute);
+            
+            var activePlayerIdAttribute = document.createAttribute('data-activeplayerid');
             activePlayerIdAttribute.value = activePlayer;
             addWordButton.setAttributeNode(activePlayerIdAttribute);
+            var inputFieldActivePlayerIdAttribute = document.createAttribute('data-inputfieldactiveplayerid');
+            inputFieldActivePlayerIdAttribute.value = activePlayer; 
+            inputField.setAttributeNode(inputFieldActivePlayerIdAttribute);
 
-            var ownIdAttribute = document.createAttribute('data-ownId');
+            var ownIdAttribute = document.createAttribute('data-ownid');
             ownIdAttribute.value = ownId;
             addWordButton.setAttributeNode(ownIdAttribute);
+            var inputFieldOwnIdAttribute = document.createAttribute('data-inputfieldownid');
+            inputFieldOwnIdAttribute.value = ownId;
+            inputField.setAttributeNode(inputFieldOwnIdAttribute);
 
+            inputField.removeAttribute('disabled');
+            inputField.focus();
+            addWordButton.removeAttribute('disabled');
+            
             if (document.getElementById("timer").innerHTML === ""){
                 document.getElementById("timer").innerHTML = "0 sec";
 
@@ -232,37 +243,61 @@ app.playTheGame = {
         }
     },
 
+    wordInputField: function () {
+    	try {
+            var wordInputField = document.getElementById('word-input-field');
+            wordInputField.addEventListener('keypress', function (e) {
+            	if (e.key === 'Enter') {
+            		var newWord = wordInputField.value;
+                    var gameId = $(this).data("inputfieldgameid");
+                    var activePlayerId = $(this).data("inputfieldactiveplayerid");
+                    var ownId = $(this).data("inputfieldownid");
+                    var timerParagraph = document.getElementById("timer");
+                    var secondData = timerParagraph.innerHTML.substring(0, timerParagraph.innerHTML.length - 4);
+                    app.playTheGame.sendWordToServer(activePlayerId, ownId, newWord, gameId, secondData);
+          	    }
+            });
+        } catch (ev){
+            // USER NOT LOGGED IN
+        }
+    },
+    
     addWordButton: function () {
         try {
             var addWordButton = document.getElementById('add-word');
             addWordButton.addEventListener('click', function () {
                 var newWord = document.getElementById('word-input-field').value;
                 var gameId = $(this).data("gameid");
-                var activePlayerId = $(this).data("activePlayerId");
-                var ownId = $(this).data("ownId");
+                var activePlayerId = $(this).data("activeplayerid");
+                var ownId = $(this).data("ownid");
                 var timerParagraph = document.getElementById("timer");
                 var secondData = timerParagraph.innerHTML.substring(0, timerParagraph.innerHTML.length - 4);
-                app.playTheGame.deactivateInputFieldAndAddWordButton(activePlayerId, ownId);
-                var dataPackage = {'newWord': newWord, 'gameId': gameId, 'secondData': secondData};
-                $.ajax({
-                    url: '/api/add-word',
-                    method: 'POST',
-                    data: dataPackage,
-                    dataType: 'json',
-                    success: function(response) {
-                        app.playTheGame.addNewWordMessage(response.answer);
-                        if (response.answer !== 'Accepted.'){
-                            app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayerId, ownId, gameId)
-                        }
-                    },
-                    error: function() {
-                        console.log('ERROR: API calling failed.');
-                    }
-                });
+                app.playTheGame.sendWordToServer(activePlayerId, ownId, newWord, gameId, secondData);
             });
         } catch (ev){
             // USER NOT LOGGED IN
         }
+    },
+    
+    sendWordToServer: function(activePlayerId, ownId, newWord, gameId, secondData) {
+    	console.log(activePlayerId + ' ' + ownId + ' ' + newWord + ' ' + gameId + ' ' + secondData);
+    	app.playTheGame.deactivateInputFieldAndAddWordButton(activePlayerId, ownId);
+        var dataPackage = {'newWord': newWord, 'gameId': gameId, 'secondData': secondData};
+        $.ajax({
+            url: '/api/add-word',
+            method: 'POST',
+            data: dataPackage,
+            dataType: 'json',
+            success: function(response) {
+                app.playTheGame.addNewWordMessage(response.answer);
+                if (response.answer !== 'Accepted.'){
+                    app.playTheGame.activateInputFieldAndAddWordButtonAndTimer(activePlayerId, ownId, gameId)
+                }
+            },
+            error: function() {
+                console.log('ERROR: API calling failed.');
+            }
+        });
     }
 
 }
