@@ -67,6 +67,14 @@ app.playTheGame = {
                         var lastWord = gameData.lastWord;
                         app.playTheGame.addWordToChain(lastWord);
                         clearTimeout(timer);
+                    } else if (gameStatus === 'BROKEN'){
+                    	app.playTheGame.addNewInfoMessage(message);
+                        var playerList = gameData.playerTable;
+                        var activePlayer = gameData.activePlayer;
+                        app.playTheGame.refreshPlayersTable(playerList, activePlayer);
+                        var lastWord = gameData.lastWord;
+                        app.playTheGame.addWordToChain(lastWord);
+                        clearTimeout(timer);
                     }
 
                 },

@@ -15,6 +15,7 @@ import javax.json.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.PrimitiveIterator.OfDouble;
 
 @RestController
 public class GameREST {
@@ -86,7 +87,14 @@ public class GameREST {
         } else if (game.getStatus().equals(GameStatus.CLOSED)){
             jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
             gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
-            gameDataBuilder.add("currentMessage", "GAME OVER. Please, push 'Main Page' in the menu.");
+            gameDataBuilder.add("currentMessage", "GAME OVER. Please, push Main Page in the menu.");
+            gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
+            gameDataBuilder.add("activePlayer", -1);
+            httpServletRequest.getSession().removeAttribute("game_id");
+        } else if (game.getStatus().equals(GameStatus.BROKEN)) {
+        	jsonPlayersArrayBuilder = getPlayerArrayBuilder(gameId);
+            gameDataBuilder.add("lastWord", gameDatas.giveLastWord(gameId));
+            gameDataBuilder.add("currentMessage", "GAME FAILED. One of the players logged out. Please, push Main Page in the menu.");
             gameDataBuilder.add("playerTable", jsonPlayersArrayBuilder);
             gameDataBuilder.add("activePlayer", -1);
             httpServletRequest.getSession().removeAttribute("game_id");

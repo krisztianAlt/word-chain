@@ -1,5 +1,6 @@
 package com.wordchain.datahandler;
 
+import com.wordchain.model.Game;
 import com.wordchain.model.Player;
 import com.wordchain.model.UserLegitimacy;
 import com.wordchain.repository.PlayerRepository;
@@ -78,7 +79,7 @@ public class PlayerDatas {
     public void deletePlayerFromOnlinePlayersList(long logoutPlayerId) {
         Player.onlinePlayers.remove(logoutPlayerId);
     }
-
+    
     public boolean checkUserIsAdmin(long playerId) {
 
         Player player = getPlayerById(playerId);

@@ -326,4 +326,23 @@ public class GameDatas {
         Integer previousLetterNumber = Game.letters.get(gameId).get(playerId);
         Game.letters.get(gameId).put(playerId, previousLetterNumber + newWordLength);
     }
+    
+    public void deletePlayerFromGames(long logoutPlayerId) {
+    	int lengthOfOnlineGamesList = Game.onlineGames.size();
+        for (int index = 0; index < lengthOfOnlineGamesList; index++) {
+        	long gameId= Game.onlineGames.get(index);
+        	Game game = getGameById(gameId);
+        	List<Player> players = game.getPlayers();
+        	int lengthOfPlayersList = players.size();
+        	for (int indexOfPlayers = 0; indexOfPlayers < lengthOfPlayersList; indexOfPlayers++) {
+        		if (players.get(indexOfPlayers).getId() == logoutPlayerId) {
+        			if (game.getStatus().equals(GameStatus.NEW)) {
+        				deleteGame(gameId);
+        			} else {
+        				game.setStatus(GameStatus.BROKEN);
+        			}
+        		}
+        	}
+        };
+    }
 }

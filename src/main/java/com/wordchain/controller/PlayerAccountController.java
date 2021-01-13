@@ -1,6 +1,7 @@
 package com.wordchain.controller;
 
 import com.wordchain.controller.collectData.PlayerDataForModel;
+import com.wordchain.datahandler.GameDatas;
 import com.wordchain.datahandler.PlayerDatas;
 import com.wordchain.model.Player;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,9 @@ public class PlayerAccountController {
 
     @Autowired
     private PlayerDatas playerDatas;
+    
+    @Autowired
+    private GameDatas gameDatas;
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(PlayerAccountController.class);
 
@@ -91,6 +95,7 @@ public class PlayerAccountController {
 
         long logoutPlayerId = (long) httpServletRequest.getSession().getAttribute("player_id");
 
+        gameDatas.deletePlayerFromGames(logoutPlayerId);
         playerDatas.deletePlayerFromOnlinePlayersList(logoutPlayerId);
 
         httpServletRequest.getSession().invalidate();
